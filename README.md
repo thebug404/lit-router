@@ -2,6 +2,15 @@
 
 `Lit Router` is the official router for [Lit](https://lit.dev/). It deeply integrates with **Lit** core to make building Single Page Applications with **Lit** a breeze.
 
+## Roadmap
+
+- [x] Basic routing
+- [x] Programmatic navigation
+- [ ] Nested routing
+- [ ] Route guards
+- [ ] Lazy loading
+- [ ] Navigation events
+
 ## Installation
 
 ```bash
@@ -40,6 +49,65 @@ const routes = [
 const router = document.querySelector('lit-router')
 
 // Register your routes
+router.setRoutes(routes)
+```
+
+## Defining routes
+
+`Lit Router` provides a simple API to define routes. We can define router of many types. Below are some examples:
+
+**Tag Name**
+
+```ts
+import { Route } from '@lit-labs/router'
+
+import './pages/home-page.js'
+import './pages/about-page.js'
+
+const routes: Route[] = [
+  { path: '/', component: 'home-page' },
+  { path: '/about', component: 'about-page' }
+]
+
+const router = document.querySelector('lit-router')
+
+router.setRoutes(routes)
+```
+
+> **Warning**
+> When defining our routes in this way you must have special control with the name of your component that you have defined through the `@customElement` or `customElements.define`. Otherwise your view cannot be rendered.
+
+**Component Class**
+
+```ts
+import { Route } from '@lit-labs/router'
+
+import { HomePage } from './pages/home-page.js'
+import { AboutPage } from './pages/about-page.js'
+
+const routes: Route[] = [
+  { path: '/', component: HomePage },
+  { path: '/about', component: AboutPage }
+]
+
+const router = document.querySelector('lit-router')
+
+router.setRoutes(routes)
+```
+
+**Component Function**
+
+```ts
+import { Route } from '@lit-labs/router'
+import { html } from 'lit'
+
+const routes: Route[] = [
+  { path: '/', component: () => html`<h1>Home</h1>` },
+  { path: '/about', component: () => html`<h1>About</h1>` }
+]
+
+const router = document.querySelector('lit-router')
+
 router.setRoutes(routes)
 ```
 
