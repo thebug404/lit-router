@@ -6,6 +6,7 @@ import './pages/about-page.js'
 
 // Imports router
 import './router.js'
+import { navigate } from './utilities.js'
 
 const $router = document.querySelector('lit-router')
 
@@ -24,7 +25,7 @@ $router?.setRoutes([
     path: '/terms',
     name: 'terms',
     component: () => {
-      const _navigate = (path: string) => router?.navigate({ path })
+      const _navigate = (path: string) => navigate({ path })
 
       return html`
         <h1>Terms</h1>
