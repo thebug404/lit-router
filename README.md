@@ -10,7 +10,7 @@ npm i @lit-labs/router
 
 ## Usage
 
-Creating a single-page application with Lit + Lit Router is a piece of cake! 🍰 With Lit, we're building our application using components, and when we add Lit Router to the mix, all we have to do is assign our components to the routes and let Lit Router work its magic to render them in the right place. ✨ Here's a simple example for you: 🚀
+Creating a single-page application with `Lit` + `Lit Router` is a piece of cake! 🍰 With Lit, we're building our application using components, and when we add `Lit Router` to the mix, all we have to do is assign our components to the routes and let `Lit Router` work its magic to render them in the right place. ✨ Here's a simple example for you: 🚀
 
 **HTML**
 
@@ -37,24 +37,24 @@ const routes = [
 ]
 
 // Get a router
-const $router = document.querySelector('lit-router')
+const router = document.querySelector('lit-router')
 
 // Register your routes
-$router.setRoutes(routes)
+router.setRoutes(routes)
 ```
 
 ## Programmatic Navigation
 
-Lit Router also provides a simple API for programmatic navigation. You can use the `navigate` method to navigate to a specific route. Here's an example:
+`Lit Router` also provides a simple API for programmatic navigation. You can use the `navigate` method to navigate to a specific route. Here's an example:
 
 ```ts
-// import { navigate } from '@lit-labs/router'
+import { router } from './index.js'
 
 // Navigate by path
-$router.navigate({ path: '/about' })
+router.navigate({ path: '/about' })
 
 // Navigate by name
-$router.navigate({ name: 'about' })
+router.navigate({ name: 'about' })
 ```
 
 ### Navigate for history
@@ -62,11 +62,31 @@ $router.navigate({ name: 'about' })
 You can also use the `forward` & `back` method to navigate for history. Here's an example:
 
 ```ts
-// import { forward, back } from '@lit-labs/router'
+import { router } from './index.js'
 
 // Navigate forward
-$router.forward()
+router.forward()
 
 // Navigate back
-$router.back()
+router.back()
+```
+
+### Navigation utilities
+
+`Lit Router` also provides some utilities to help you with navigation. Here's an example:
+
+```ts
+import { navigate, forward, back } from '@lit-labs/router'
+
+// Navigate by path
+navigate({ path: '/about' })
+
+// Navigate by name
+navigate({ name: 'about' })
+
+// Navigate forward
+forward()
+
+// Navigate back
+back()
 ```
