@@ -24,8 +24,36 @@ const routes = [
 ]
 
 // Get a router
-const router = document.querySelector('lit-router')
+const $router = document.querySelector('lit-router')
 
 // Register your routes
-router.setRoutes(routes)
+$router.setRoutes(routes)
+```
+
+## Programmatic Navigation
+
+Lit Router also provides a simple API for programmatic navigation. You can use the `navigate` method to navigate to a specific route. Here's an example:
+
+```ts
+// import { navigate } from '@lit-labs/router'
+
+// Navigate by path
+$router.navigate({ path: '/about' })
+
+// Navigate by name
+$router.navigate({ name: 'about' })
+```
+
+### Navigate for history
+
+You can also use the `forward` & `back` method to navigate for history. Here's an example:
+
+```ts
+// import { forward, back } from '@lit-labs/router'
+
+// Navigate forward
+$router.forward()
+
+// Navigate back
+$router.back()
 ```

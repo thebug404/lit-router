@@ -15,3 +15,17 @@ export interface RouteOptions {
    */
   component: string;
 }
+
+/**
+ * The options for a navigation.
+ */
+export interface NavigationOptions {
+  /**
+   * The path of route.
+   */
+  name: string;
+  /**
+   * The path of route.
+   */
+  path: string;
+}

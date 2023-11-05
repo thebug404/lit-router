@@ -21,3 +21,7 @@ $router?.setRoutes([
 ])
 
 console.log('router: ', $router?.routes)
+
+// setTimeout(() => {
+//   $router?.navigate({ path: '/about' })
+// }, 3000)

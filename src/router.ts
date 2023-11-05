@@ -1,7 +1,7 @@
-import { customElement } from "lit/decorators.js"
-import { LitElement, html } from "lit"
+import { customElement, state } from "lit/decorators.js"
+import { LitElement, PropertyValueMap, html } from "lit"
 
-import { RouteOptions } from './declarations.js'
+import { RouteOptions, NavigationOptions } from './declarations.js'
 import { Route } from './route.js'
 
 declare global {
@@ -12,7 +12,15 @@ declare global {
 
 @customElement("lit-router")
 export class LitRouter extends LitElement{
+  @state()
+  private _currentRoute: Route | null = null
+
+  @state()
   private readonly _routes: Route[] = []
+
+  protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+    this.navigate({ path: window.location.pathname })
+  }
 
   /**
    * List of registered routes.
@@ -43,8 +51,16 @@ export class LitRouter extends LitElement{
    * Returns the route with the given name.
    * @param path The path of route.
    */
-  findRouteByPath (path: string): Route | undefined {
-    return this._routes.find((route) => route.match(path))
+  findRouteByPath (path: string): Route | null {
+    return this._routes.find((route) => route.match(path)) || null
+  }
+
+  /**
+   * Returns the route with the given name.
+   * @param name The name of route.
+   */
+  findRouteByName (name: string): Route | null {
+    return this._routes.find((route) => route.name === name) || null
   }
 
   /**
@@ -77,15 +93,63 @@ export class LitRouter extends LitElement{
     routes.forEach((route) => this.setRoute(route))
   }
 
+  /**
+   * Navigates to a new route based on the provided navigation options.
+   *
+   * @param {Partial<NavigationOptions>} navigation - The navigation options, which can include 'name' or 'path'.
+   * @throws {Error} Throws an error if 'path' is missing.
+   */
+  navigate (navigation: Partial<NavigationOptions>): void {
+    const { name, path } = navigation
+
+    // Search by name.
+    if (name) {
+      const route = this.findRouteByName(name)
+
+      if (!route) {
+        return console.warn(new Error(`Route with name "${name}" not found.`))
+      }
+
+      this._currentRoute = route
+
+      return window.history.pushState({}, '', route.path)
+    }
+
+    if (!path) {
+      throw new Error('Missing path.')
+    }
+
+    // Search by path.
+    const route = this.findRouteByPath(path)
+
+    if (!route) {
+      return console.warn(new Error(`Route with path "${path}" not found.`))
+    }
+
+    this._currentRoute = route
+
+    window.history.pushState({}, '', route.path)
+  }
+
+  /**
+   * Navigates to the next page in session history.
+   */
+  forward (): void {
+    window.history.forward()
+  }
+
+  /**
+   * Navigates to the previous page in session history.
+   */
+  back (): void {
+    window.history.back()
+  }
+
   protected createRenderRoot (): Element | ShadowRoot {
     return this
   }
 
   protected render (): unknown {
-    const path = window.location.pathname
-
-    const route = this.findRouteByPath(path)
-
-    return html`${route?.resolve()}`
+    return html`${this._currentRoute?.resolve()}`
   }
 }
