@@ -1,7 +1,7 @@
-import { customElement, state } from "lit/decorators.js"
-import { LitElement, PropertyValueMap, html } from "lit"
+import { customElement, state } from 'lit/decorators.js'
+import { LitElement, PropertyValueMap, html } from 'lit'
 
-import { RouteOptions, NavigationOptions } from './declarations.js'
+import { RouteOptions, NavigationOptions, Navigation } from './declarations.js'
 import { Route } from './route.js'
 
 declare global {
@@ -17,6 +17,18 @@ export class LitRouter extends LitElement {
 
   @state()
   private readonly _routes: Route[] = []
+
+  connectedCallback(): void {
+    super.connectedCallback()
+
+    window.addEventListener('popstate', this._onHandlePopState.bind(this))
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+
+    window.removeEventListener('popstate', this._onHandlePopState.bind(this))
+  }
 
   protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
     this.navigate({ path: window.location.pathname })
@@ -96,10 +108,15 @@ export class LitRouter extends LitElement {
   /**
    * Navigates to a new route based on the provided navigation options.
    *
-   * @param {Partial<NavigationOptions>} navigation - The navigation options, which can include 'name' or 'path'.
+   * @param {Partial<Navigation>} navigation - The navigation options, which can include 'name' or 'path'.
    * @throws {Error} Throws an error if 'path' is missing.
    */
-  navigate (navigation: Partial<NavigationOptions>): void {
+  navigate (navigation: Partial<Navigation>, options: Partial<NavigationOptions> = {}): void {
+    const { preventHistory } = Object.assign(
+      { preventHistory: false },
+      options
+    )
+
     const { name, path } = navigation
 
     // Search by name.
@@ -112,7 +129,11 @@ export class LitRouter extends LitElement {
 
       this._currentRoute = route
 
-      return window.history.pushState({}, '', route.path)
+      if (!preventHistory) {
+        window.history.pushState({}, '', route.path)
+      }
+
+      return
     }
 
     if (!path) {
@@ -128,7 +149,9 @@ export class LitRouter extends LitElement {
 
     this._currentRoute = route
 
-    window.history.pushState({}, '', route.path)
+    if (!preventHistory) {
+      window.history.pushState({}, '', route.path)
+    }
   }
 
   /**
@@ -143,6 +166,20 @@ export class LitRouter extends LitElement {
    */
   back (): void {
     window.history.back()
+  }
+
+  /**
+   * Handles the popstate event.
+   */
+  private _onHandlePopState (ev: PopStateEvent): void {
+    const target = ev.target as Window
+
+    const pathname = target.location.pathname
+
+    this.navigate(
+      { path: pathname },
+      { preventHistory: true }
+    )
   }
 
   protected createRenderRoot (): Element | ShadowRoot {

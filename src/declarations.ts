@@ -18,10 +18,7 @@ export interface RouteOptions {
   component: string | typeof HTMLElement | (() => TemplateResult);
 }
 
-/**
- * The options for a navigation.
- */
-export interface NavigationOptions {
+export interface Navigation {
   /**
    * The path of route.
    */
@@ -30,4 +27,11 @@ export interface NavigationOptions {
    * The path of route.
    */
   path: string;
+}
+
+export interface NavigationOptions {
+  /**
+   * The router will not update the browser history. For default is `false`.
+   */
+  preventHistory?: boolean;
 }
