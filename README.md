@@ -12,15 +12,28 @@ npm i @lit-labs/router
 
 Creating a single-page application with Lit + Lit Router is a piece of cake! 🍰 With Lit, we're building our application using components, and when we add Lit Router to the mix, all we have to do is assign our components to the routes and let Lit Router work its magic to render them in the right place. ✨ Here's a simple example for you: 🚀
 
+**HTML**
+
+```html
+<lit-router></lit-router>
+```
+
+**Typescript/Javascript**
+
 ```js
 // Import Lit Router
+import { html } from 'lit'
 import '@lit-labs/router'
+
+// Import Pages/Views
+import { HomePage } from './pages/home-page.js'
+import './pages/about-page.js'
 
 // Define your routes
 const routes = [
-  { path: '/', component: 'home-page' },
+  { path: '/', component: HomePage },
   { path: '/about', component: 'about-page' },
-  { path: '/users/:id', component: 'user-page' },
+  { path: '/users/:id', component: () => html`<h1>Users</h1>` },
 ]
 
 // Get a router

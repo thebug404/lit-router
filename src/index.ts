@@ -1,6 +1,8 @@
+import { html } from 'lit'
+
 // Imports pages
+import { HomePage } from './pages/home-page.js'
 import './pages/about-page.js'
-import './pages/home-page.js'
 
 // Imports router
 import './router.js'
@@ -11,17 +13,28 @@ $router?.setRoutes([
   {
     path: '/',
     name: 'home',
-    component: 'home-page'
+    component: HomePage
   },
   {
     path: '/about',
     name: 'about',
     component: 'about-page'
+  },
+  {
+    path: '/terms',
+    name: 'terms',
+    component: () => {
+      const _navigate = (path: string) => router?.navigate({ path })
+
+      return html`
+        <h1>Terms</h1>
+        <button @click=${() => _navigate('/')}>Home</button>
+        <button @click=${() => _navigate('/about')}>About</button>
+      `
+    }
   }
 ])
 
 console.log('router: ', $router?.routes)
 
-// setTimeout(() => {
-//   $router?.navigate({ path: '/about' })
-// }, 3000)
+export const router = $router

@@ -1,3 +1,5 @@
+import { TemplateResult } from "lit";
+
 /**
  * The options for a route.
  */
@@ -13,7 +15,7 @@ export interface RouteOptions {
   /**
    * The component to render.
    */
-  component: string;
+  component: string | typeof HTMLElement | (() => TemplateResult);
 }
 
 /**

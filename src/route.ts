@@ -1,3 +1,5 @@
+import { TemplateResult } from 'lit'
+
 import { RouteOptions } from './declarations.js'
 
 export class Route {
@@ -5,7 +7,7 @@ export class Route {
 
   private readonly _urlPattern: URLPattern
 
-  readonly component: string
+  readonly component: string | typeof HTMLElement | (() => TemplateResult)
 
   readonly name?: string
 
@@ -22,8 +24,17 @@ export class Route {
   }
 
   resolve (): unknown {
-    const $component = document.createElement(this.component)
+    const component = this.component
+    const isFunction = typeof component === 'function'
 
-    return $component
+    // If the component is a class, we instantiate it.
+    if (isFunction && component.prototype instanceof HTMLElement) {
+      return new (component as { new (): HTMLElement; prototype: HTMLElement; })()
+    }
+
+    // If the component is a function, we call it.
+    if (isFunction) return (component as () => TemplateResult)()
+
+    return document.createElement(component as string)
   }
 }

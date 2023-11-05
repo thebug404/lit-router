@@ -11,7 +11,7 @@ declare global {
 }
 
 @customElement("lit-router")
-export class LitRouter extends LitElement{
+export class LitRouter extends LitElement {
   @state()
   private _currentRoute: Route | null = null
 
