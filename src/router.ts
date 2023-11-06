@@ -1,5 +1,6 @@
 import { customElement, state } from 'lit/decorators.js'
-import { LitElement, PropertyValueMap, html } from 'lit'
+import { LitElement, PropertyValueMap } from 'lit'
+import { Task } from '@lit/task'
 
 import { RouteOptions, NavigationOptions, Navigation } from './declarations.js'
 import { Route } from './route.js'
@@ -17,6 +18,11 @@ export class LitRouter extends LitElement {
 
   @state()
   private readonly _routes: Route[] = []
+
+  private _renderingTemplateTask = new Task(this, {
+    task: async ([_currentRoute]) => _currentRoute?.resolve(),
+    args: () => [this._currentRoute]
+  })
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -187,6 +193,8 @@ export class LitRouter extends LitElement {
   }
 
   protected render (): unknown {
-    return html`${this._currentRoute?.resolve()}`
+    return this._renderingTemplateTask.render({
+      complete: (template) => template,
+    })
   }
 }

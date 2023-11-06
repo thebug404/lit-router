@@ -1,13 +1,13 @@
 import { TemplateResult } from 'lit'
 
-import { RouteOptions } from './declarations.js'
+import { RouteOptions, Component, HTMLElementConstructor } from './declarations.js'
 
 export class Route {
   readonly path: string
 
   private readonly _urlPattern: URLPattern
 
-  readonly component: string | typeof HTMLElement | (() => TemplateResult)
+  readonly component: Component
 
   readonly name?: string
 
@@ -23,18 +23,25 @@ export class Route {
     return this._urlPattern.test(window.location.origin + path)
   }
 
-  resolve (): unknown {
-    const component = this.component
-    const isFunction = typeof component === 'function'
+  async resolve(): Promise<unknown> {
+    const component = this.component;
 
-    // If the component is a class, we instantiate it.
-    if (isFunction && component.prototype instanceof HTMLElement) {
-      return new (component as { new (): HTMLElement; prototype: HTMLElement; })()
+    if (typeof component === 'function') {
+      if (component.prototype instanceof HTMLElement) {
+        return new (component as HTMLElementConstructor)();
+      }
+
+      const result = (component as () => TemplateResult | (() => Promise<unknown>))();
+
+      if (result instanceof Promise) {
+        const Module = await result;
+
+        return new Module();
+      }
+
+      return result;
     }
 
-    // If the component is a function, we call it.
-    if (isFunction) return (component as () => TemplateResult)()
-
-    return document.createElement(component as string)
+    return document.createElement(component as string);
   }
 }

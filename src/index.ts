@@ -1,7 +1,6 @@
 import { html } from 'lit'
 
 // Imports pages
-import { HomePage } from './pages/home-page.js'
 import './pages/about-page.js'
 
 // Imports router
@@ -14,7 +13,7 @@ $router?.setRoutes([
   {
     path: '/',
     name: 'home',
-    component: HomePage
+    component: () => import('./pages/home-page.js').then((module) => module.HomePage)
   },
   {
     path: '/about',

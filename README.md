@@ -158,3 +158,25 @@ forward()
 // Navigate back
 back()
 ```
+
+## Lazy Loading
+
+When developing applications that utilize bundles, the JavaScript bundle can grow substantially in size, potentially impacting page load times. To enhance efficiency, it's advantageous to break down the components of each route into distinct chunks, loading them only when the corresponding route is accessed.
+
+`Lit Router` readily offers support for dynamic imports, allowing you to substitute static imports with dynamic ones:
+
+```ts
+import { Route } from '@lit-labs/router'
+
+const routes: Route[] = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('./pages/home-page.js').then((m) => m.HomePage)
+  }
+]
+
+const router = document.querySelector('lit-router')
+
+router.setRoutes(routes)
+```

@@ -1,4 +1,8 @@
-import { TemplateResult } from "lit";
+import { TemplateResult } from 'lit'
+
+export type HTMLElementConstructor = typeof HTMLElement
+
+export type Component = string | HTMLElementConstructor | (() => TemplateResult) | (() => Promise<unknown>)
 
 /**
  * The options for a route.
@@ -15,7 +19,7 @@ export interface RouteOptions {
   /**
    * The component to render.
    */
-  component: string | typeof HTMLElement | (() => TemplateResult);
+  component: Component;
 }
 
 export interface Navigation {
