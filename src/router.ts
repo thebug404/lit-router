@@ -129,7 +129,10 @@ export class LitRouter extends LitElement {
     const route = this._createRouteFromConfig(routeConfig);
 
     (children || []).forEach((child) => {
-      const childRoute = this._buildNestedRouteFromConfig(child)
+      const childRoute = this._buildNestedRouteFromConfig({
+        ...child,
+        path: `${route.path}${child.path}`
+      })
 
       childRoute.setParent(route)
 

@@ -12,7 +12,7 @@ export interface RouteConfig {
   /**
    * The name of route.
    */
-  name: string
+  name?: string
   /**
    * The component of route.
    */
@@ -20,7 +20,7 @@ export interface RouteConfig {
   /**
    * The children of route.
    */
-  children: RouteConfig[];
+  children?: RouteConfig[];
 }
 
 export interface Navigation {

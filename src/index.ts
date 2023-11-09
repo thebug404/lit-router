@@ -39,16 +39,14 @@ $router?.setRoutes([
     component: () => import('./pages/dashboard/dashboard-page.js').then((module) => module.DashboardPage),
     children: [
       {
-        path: '/dashboard/users',
+        path: '/users',
         name: 'users',
-        component: () => import('./pages/dashboard/users-page.js').then((module) => module.UsersPage),
-        children: []
+        component: () => import('./pages/dashboard/users-page.js').then((module) => module.UsersPage)
       },
       {
-        path: '/dashboard/settings',
+        path: '/settings',
         name: 'settings',
-        component: () => import('./pages/dashboard/settings-page.js').then((module) => module.SettingsPage),
-        children: []
+        component: () => import('./pages/dashboard/settings-page.js').then((module) => module.SettingsPage)
       }
     ]
   }
