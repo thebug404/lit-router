@@ -6,7 +6,7 @@
 
 - [x] Basic routing
 - [x] Programmatic navigation
-- [ ] Nested routing
+- [x] Nested routing
 - [ ] Route guards
 - [x] Lazy loading
 - [ ] Navigation events
