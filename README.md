@@ -8,7 +8,7 @@
 - [x] Programmatic navigation
 - [ ] Nested routing
 - [ ] Route guards
-- [ ] Lazy loading
+- [x] Lazy loading
 - [ ] Navigation events
 
 ## Installation
@@ -110,6 +110,9 @@ const router = document.querySelector('lit-router')
 
 router.setRoutes(routes)
 ```
+
+> **Warning**
+> When defining our routes of this type, we cannot nest routes.
 
 ## Programmatic Navigation
 
