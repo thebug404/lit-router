@@ -20,6 +20,10 @@ export interface RouteOptions {
    * The component to render.
    */
   component: Component;
+  /**
+   * The children routes.
+   */
+  children?: RouteOptions[];
 }
 
 export interface Navigation {

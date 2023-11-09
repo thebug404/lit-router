@@ -69,8 +69,22 @@ export class LitRouter extends LitElement {
    * Returns the route with the given name.
    * @param path The path of route.
    */
-  findRouteByPath (path: string): Route | null {
-    return this._routes.find((route) => route.match(path)) || null
+  findRouteByPath (path: string, routes: Route[] = this.routes, onlyLeafRoute = false): Route | undefined {
+    const hasLeafRoute = (route: Route) => route.children.length === 0
+
+    const findInChildRoutes = (path: string, children: Route[]) => this.findRouteByPath(path, children, onlyLeafRoute)
+
+    for (const route of routes) {
+      if (onlyLeafRoute && route.match(path)) return route
+
+      if (onlyLeafRoute && route.match(path) && hasLeafRoute(route)) return route
+
+      if (!onlyLeafRoute && route.match(path)) return route
+
+      const childRoute = findInChildRoutes(path, route.children)
+
+      if (childRoute) return childRoute
+    }
   }
 
   /**
