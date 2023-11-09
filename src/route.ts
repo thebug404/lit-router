@@ -1,47 +1,23 @@
 import { TemplateResult } from 'lit'
 
-import { RouteOptions, Component, HTMLElementConstructor } from './declarations.js'
+import { Component, HTMLElementConstructor, RouteConfig } from './declarations.js'
 
-const _loadComponent = async (component: Component): Promise<unknown> => {
-  if (typeof component === 'function') {
-    if (component.prototype instanceof HTMLElement) {
-      return new (component as HTMLElementConstructor)();
-    }
+export class Route implements RouteConfig {
+  readonly path!: string
 
-    const result = (component as () => TemplateResult | (() => Promise<unknown>))();
+  readonly component!: Component
 
-    if (result instanceof Promise) {
-      const Module = await result;
+  name!: string
 
-      return new Module();
-    }
-
-    return result;
-  }
-
-  return document.createElement(component as string);
-}
-
-export class Route {
-  readonly path: string
-
-  private readonly _urlPattern: URLPattern
-
-  readonly component: Component
-
-  readonly name?: string
+  children: (RouteConfig & Route)[] = []
 
   private _parent: Route | null = null
 
-  readonly children: Route[] = []
+  private readonly _urlPattern!: URLPattern
 
-  constructor (options: RouteOptions) {
-    this.path = options.path
-    this.component = options.component
-    this.name = options.name
-
-    this.children = options.children || []
-    this.children.forEach((child) => child.setParent(this))
+  constructor (path: string, component: Component) {
+    this.path = path
+    this.component = component
 
     this._urlPattern = new URLPattern(this.path, window.location.origin)
   }
@@ -54,15 +30,52 @@ export class Route {
     return this._urlPattern.test(window.location.origin + path)
   }
 
+  /**
+   * Resolves the provided component and returns an HTMLElement instance.
+   *
+   * This method is used to take a representation of a component 
+   * (such as a function that returns a TemplateResult or a promise
+   * that resolves to a custom module) and create an HTMLElement 
+   * instance that can be used in the DOM.
+   * 
+   * @param component The component to resolve.
+   */
+  private async _resolveComponent (component: Component): Promise<unknown> {
+    if (typeof component === 'function') {
+      if (component.prototype instanceof HTMLElement) {
+        return new (component as HTMLElementConstructor)();
+      }
+  
+      const result = (component as () => TemplateResult | (() => Promise<unknown>))();
+  
+      if (result instanceof Promise) {
+        const Module = await result;
+  
+        return new Module();
+      }
+  
+      return result;
+    }
+  
+    return document.createElement(component as string);
+  }
+
+  /**
+   * Resolves a component and, optionally, nests it in a parent 
+   * component using the [Chain of Responsibility](https://refactoring.guru/design-patterns/chain-of-responsibility) pattern.
+   * 
+   * @param component The component to resolve.
+   * @returns A promise that resolves to an HTMLElement instance.
+   */
   async resolve (component?: () => HTMLElement): Promise<unknown> {
     let _component: HTMLElement | null = component ? component() : null
 
     if (!_component) {
-      _component = await _loadComponent(this.component) as unknown as HTMLElement
+      _component = await this._resolveComponent(this.component) as unknown as HTMLElement
     }
 
     if (this._parent) {
-      const parent = await _loadComponent(this._parent.component) as HTMLElement
+      const parent = await this._resolveComponent(this._parent.component) as HTMLElement
 
       const child = _component
 

@@ -6,7 +6,6 @@ import './pages/about-page.js'
 // Imports router
 import './router.js'
 import { navigate } from './utilities.js'
-import { Route } from './route.js'
 
 const $router = document.querySelector('lit-router')
 
@@ -34,18 +33,25 @@ $router?.setRoutes([
       `
     }
   },
-  new Route({
+  {
     path: '/dashboard',
     name: 'dashboard',
-    component: () => import('./pages/dashboard/dashboard-page.js').then((m) => m.DashboardPage),
+    component: () => import('./pages/dashboard/dashboard-page.js').then((module) => module.DashboardPage),
     children: [
-      new Route({
+      {
+        path: '/dashboard/users',
+        name: 'users',
+        component: () => import('./pages/dashboard/users-page.js').then((module) => module.UsersPage),
+        children: []
+      },
+      {
         path: '/dashboard/settings',
         name: 'settings',
-        component: () => import('./pages/dashboard/settings-page.js').then((m) => m.SettingsPage)
-      })
+        component: () => import('./pages/dashboard/settings-page.js').then((module) => module.SettingsPage),
+        children: []
+      }
     ]
-  })
+  }
 ])
 
 console.log('router: ', $router?.routes)

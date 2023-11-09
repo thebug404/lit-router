@@ -4,26 +4,23 @@ export type HTMLElementConstructor = typeof HTMLElement
 
 export type Component = string | HTMLElementConstructor | (() => TemplateResult) | (() => Promise<unknown>)
 
-/**
- * The options for a route.
- */
-export interface RouteOptions {
+export interface RouteConfig {
   /**
-   * The path to match against.
+   * The path of route.
    */
-  path: string;
+  path: string
   /**
-   * The name of the component to render.
+   * The name of route.
    */
-  name?: string;
+  name: string
   /**
-   * The component to render.
+   * The component of route.
    */
-  component: Component;
+  component: Component
   /**
-   * The children routes.
+   * The children of route.
    */
-  children?: RouteOptions[];
+  children: RouteConfig[];
 }
 
 export interface Navigation {

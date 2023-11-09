@@ -2,7 +2,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { LitElement, PropertyValueMap } from 'lit'
 import { Task } from '@lit/task'
 
-import { RouteOptions, NavigationOptions, Navigation } from './declarations.js'
+import { NavigationOptions, Navigation, RouteConfig } from './declarations.js'
 import { Route } from './route.js'
 
 declare global {
@@ -75,7 +75,7 @@ export class LitRouter extends LitElement {
     const findInChildRoutes = (path: string, children: Route[]) => this.findRouteByPath(path, children, onlyLeafRoute)
 
     for (const route of routes) {
-      if (onlyLeafRoute && route.match(path)) return route
+      if (onlyLeafRoute && route?.match(path)) return route
 
       if (onlyLeafRoute && route.match(path) && hasLeafRoute(route)) return route
 
@@ -96,33 +96,79 @@ export class LitRouter extends LitElement {
   }
 
   /**
+   * Creates a new route based on the provided route configuration.
+   * @param routeConfig The route configuration.
+   * @throws {Error} Throws an error if 'path' or 'component' is missing.
+   */
+  private _createRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
+    const { path, name, component } = routeConfig
+
+    if (!path) {
+      throw new Error('Missing path.')
+    }
+
+    if (!component) {
+      throw new Error('Missing component.')
+    }
+
+    const route = new Route(path, component)
+
+    route.name = name || ''
+
+    return route
+  }
+
+  /**
+   * Builds a nested route based on the provided route configuration.
+   * @param routeConfig The route configuration.
+   * @throws {Error} Throws an error if 'path' or 'component' is missing.
+   */
+  private _buildNestedRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
+    const { children } = routeConfig
+
+    const route = this._createRouteFromConfig(routeConfig);
+
+    (children || []).forEach((child) => {
+      const childRoute = this._buildNestedRouteFromConfig(child)
+
+      childRoute.setParent(route)
+
+      if (this.findRouteByPath(child.path, route.children || [])) {
+        throw new Error(`${child.name || child.path} children route has already been declared`)
+      }
+
+      route.children.push(childRoute)
+    })
+
+    return route
+  }
+
+  /**
    * Adds a new route to the router configuration.
    *
-   * @param {Route | RouteOptions} route The route to be added, either as a `Route` instance or a `RouteOptions` object.
+   * @param {RouteOptions} route The route to be added, either as a `Route` instance or a `RouteOptions` object.
    * @throws {Error} Throws an error if a route with the same path or name already exists.
    */
-  setRoute (route: Route | RouteOptions): void {
-    // Validate the route is not already defined.
-    if (this.hasRouteByPath(route.path) || this.hasRouteByName(route?.name || '')) {
+  setRoute (route: Partial<RouteConfig>): void {
+    if (this.hasRouteByPath(route.path || '') || this.hasRouteByName(route?.name || '')) {
       throw new Error(`Route with path "${route.path}" already exists.`)
     }
 
-    // Validate the route is a instance of Route.
-    if (route instanceof Route) {
-      this._routes.push(route)
-      return
-    }
+    const _route = this._createRouteFromConfig(route)
 
-    // Create a new instance of Route.
-    this._routes.push(new Route(route))
+    this._routes.push(_route)
   }
 
   /**
    * Adds a list of routes to the router configuration.
    * @param routes A list of routes.
    */
-  setRoutes (routes: (Route | RouteOptions)[]): void {
-    routes.forEach((route) => this.setRoute(route))
+  setRoutes (routes: Partial<RouteConfig>[]): void {
+    for (const route of routes) {
+      const _route = this._buildNestedRouteFromConfig(route)
+
+      this._routes.push(_route)
+    }
   }
 
   /**
@@ -150,7 +196,7 @@ export class LitRouter extends LitElement {
       this._currentRoute = route
 
       if (!preventHistory) {
-        window.history.pushState({}, '', route.path)
+        window.history.pushState({}, '', window.location.pathname)
       }
 
       return
@@ -170,7 +216,7 @@ export class LitRouter extends LitElement {
     this._currentRoute = route
 
     if (!preventHistory) {
-      window.history.pushState({}, '', route.path)
+      window.history.pushState({}, '', window.location.pathname)
     }
   }
 
