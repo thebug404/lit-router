@@ -1,11 +1,9 @@
-import { html } from 'lit'
-
 // Imports pages
 import './pages/about-page.js'
 
 // Imports router
 import './router.js'
-import { navigate } from './utilities.js'
+import './router-link.js'
 
 const $router = document.querySelector('lit-router')
 
@@ -23,15 +21,7 @@ $router?.setRoutes([
   {
     path: '/terms',
     name: 'terms',
-    component: () => {
-      const _navigate = (path: string) => navigate({ path })
-
-      return html`
-        <h1>Terms</h1>
-        <button @click=${() => _navigate('/')}>Home</button>
-        <button @click=${() => _navigate('/about')}>About</button>
-      `
-    }
+    component: () => import('./pages/terms-page.js').then((module) => module.TermsPage)
   },
   {
     path: '/dashboard',
