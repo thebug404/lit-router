@@ -13,13 +13,13 @@ export class Route implements RouteConfig {
 
   private _parent: Route | null = null
 
-  private readonly _urlPattern!: URLPattern
+  readonly urlPattern!: URLPattern
 
   constructor (path: string, component: Component) {
     this.path = path
     this.component = component
 
-    this._urlPattern = new URLPattern(this.path, window.location.origin)
+    this.urlPattern = new URLPattern(this.path, window.location.origin)
   }
 
   setParent (parent: Route): void {
@@ -27,7 +27,7 @@ export class Route implements RouteConfig {
   }
 
   match (path: string): boolean {
-    return this._urlPattern.test(window.location.origin + path)
+    return this.urlPattern.test(window.location.origin + path)
   }
 
   /**

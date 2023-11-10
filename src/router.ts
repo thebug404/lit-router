@@ -28,12 +28,16 @@ export class LitRouter extends LitElement {
     super.connectedCallback()
 
     window.addEventListener('popstate', this._onHandlePopState.bind(this))
+
+    window.addEventListener('click', this._onHandleAnchorClick.bind(this))
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
 
     window.removeEventListener('popstate', this._onHandlePopState.bind(this))
+
+    window.removeEventListener('click', this._onHandleAnchorClick.bind(this))
   }
 
   protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
@@ -188,6 +192,8 @@ export class LitRouter extends LitElement {
 
     const { name, path } = navigation
 
+    const { pathname } = window.location
+
     // Search by name.
     if (name) {
       const route = this.findRouteByName(name)
@@ -199,7 +205,7 @@ export class LitRouter extends LitElement {
       this._currentRoute = route
 
       if (!preventHistory) {
-        window.history.pushState({}, '', window.location.pathname)
+        window.history.pushState({}, '', pathname)
       }
 
       return
@@ -219,7 +225,7 @@ export class LitRouter extends LitElement {
     this._currentRoute = route
 
     if (!preventHistory) {
-      window.history.pushState({}, '', window.location.pathname)
+      window.history.pushState({}, '', pathname)
     }
   }
 
@@ -235,6 +241,56 @@ export class LitRouter extends LitElement {
    */
   back (): void {
     window.history.back()
+  }
+
+  /**
+   * Handles the click event on anchor elements.
+   * @param ev The click event.
+   */
+  private _onHandleAnchorClick (ev: MouseEvent): void {
+    const isNonNavigationClick = 
+      ev.button !== 0 ||
+      ev.metaKey ||
+      ev.ctrlKey ||
+      ev.shiftKey;
+    
+    if (ev.defaultPrevented || isNonNavigationClick) {
+      return;
+    }
+
+    const anchor = ev
+      .composedPath()
+      .find((n) => (n as HTMLElement).tagName === 'A') as
+      | HTMLAnchorElement
+      | undefined;
+
+    if (
+      anchor === undefined ||
+      anchor.target !== '' ||
+      anchor.hasAttribute('download') ||
+      anchor.getAttribute('rel') === 'external'
+    ) {
+      return
+    }
+
+    const href = anchor.href;
+
+    if (href === '' || href.startsWith('mailto:')) {
+      return;
+    }
+
+    const location = window.location;
+
+    if (anchor.origin !== origin) {
+      return;
+    }
+
+    ev.preventDefault();
+
+    if (href !== location.href) {
+      window.history.pushState({}, '', href);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    }
   }
 
   /**
