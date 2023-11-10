@@ -184,49 +184,16 @@ export class LitRouter extends LitElement {
    * @param {Partial<Navigation>} navigation - The navigation options, which can include 'name' or 'path'.
    * @throws {Error} Throws an error if 'path' is missing.
    */
-  navigate (navigation: Partial<Navigation>, options: Partial<NavigationOptions> = {}): void {
-    const { preventHistory } = Object.assign(
-      { preventHistory: false },
-      options
-    )
-
-    const { name, path } = navigation
-
+  navigate (navigation: Partial<Navigation>, _options: Partial<NavigationOptions> = {}): void {
     const { pathname } = window.location
 
-    // Search by name.
-    if (name) {
-      const route = this.findRouteByName(name)
+    window.history.pushState({}, '', pathname)
 
-      if (!route) {
-        return console.warn(new Error(`Route with name "${name}" not found.`))
-      }
+    const event = new PopStateEvent('popstate', {
+      state: navigation
+    })
 
-      this._currentRoute = route
-
-      if (!preventHistory) {
-        window.history.pushState({}, '', pathname)
-      }
-
-      return
-    }
-
-    if (!path) {
-      throw new Error('Missing path.')
-    }
-
-    // Search by path.
-    const route = this.findRouteByPath(path)
-
-    if (!route) {
-      return console.warn(new Error(`Route with path "${path}" not found.`))
-    }
-
-    this._currentRoute = route
-
-    if (!preventHistory) {
-      window.history.pushState({}, '', pathname)
-    }
+    window.dispatchEvent(event)
   }
 
   /**
@@ -289,6 +256,7 @@ export class LitRouter extends LitElement {
 
     if (href !== location.href) {
       window.history.pushState({}, '', href);
+
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
   }
@@ -297,14 +265,45 @@ export class LitRouter extends LitElement {
    * Handles the popstate event.
    */
   private _onHandlePopState (ev: PopStateEvent): void {
-    const target = ev.target as Window
+    const state = ev.state as Partial<Navigation> | null
 
-    const pathname = target.location.pathname
+    if (!state || !Object.keys(state).length) {
+      const pathname = window.location.pathname
 
-    this.navigate(
-      { path: pathname },
-      { preventHistory: true }
-    )
+      const route = this.findRouteByPath(pathname)
+
+      if (!route) {
+        return console.warn(new Error(`Route with path "${pathname}" not found.`))
+      }
+  
+      this._currentRoute = route
+      return
+    }
+
+    const { name, path } = state
+
+    if (name) {
+      const route = this.findRouteByName(name)
+
+      if (!route) {
+        return console.warn(new Error(`Route with name "${name}" not found.`))
+      }
+
+      this._currentRoute = route
+      return
+    }
+
+    if (!path) {
+      throw new Error('Missing path.')
+    }
+
+    const route = this.findRouteByPath(path)
+
+    if (!route) {
+      return console.warn(new Error(`Route with path "${path}" not found.`))
+    }
+
+    this._currentRoute = route
   }
 
   protected createRenderRoot (): Element | ShadowRoot {
