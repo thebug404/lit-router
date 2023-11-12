@@ -8,25 +8,19 @@ export interface RouteConfig {
   /**
    * The path of route.
    */
-  path: string
-  /**
-   * The name of route.
-   */
-  name?: string
+  path: string;
   /**
    * The component of route.
    */
-  component: Component
+  component: Component;
   /**
    * The children of route.
    */
   children?: RouteConfig[];
 }
 
-export interface Navigation {
-  name: string;
-  pathname: string;
-  href: string;
+export interface Navigation extends URL {
+  query: Record<string, string>;
 }
 
 export interface NavigationOptions {

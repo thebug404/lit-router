@@ -93,16 +93,6 @@ export class LitRouter extends LitElement {
   }
 
   /**
-   * Returns true if the router has a route with the given name.
-   * @param name The name of route.
-   */
-  hasRouteByName (name: string): boolean {
-    if (!name) return false
-
-    return this._routes.some((route) => route.name === name)
-  }
-
-  /**
    * Returns the route with the given name.
    * @param path The path of route.
    */
@@ -125,20 +115,12 @@ export class LitRouter extends LitElement {
   }
 
   /**
-   * Returns the route with the given name.
-   * @param name The name of route.
-   */
-  findRouteByName (name: string): Route | null {
-    return this._routes.find((route) => route.name === name) || null
-  }
-
-  /**
    * Creates a new route based on the provided route configuration.
    * @param routeConfig The route configuration.
    * @throws {Error} Throws an error if 'path' or 'component' is missing.
    */
   private _createRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
-    const { path, name, component } = routeConfig
+    const { path, component } = routeConfig
 
     if (!path) {
       throw new Error('Missing path.')
@@ -149,8 +131,6 @@ export class LitRouter extends LitElement {
     }
 
     const route = new Route(path, component)
-
-    route.name = name || ''
 
     return route
   }
@@ -174,7 +154,7 @@ export class LitRouter extends LitElement {
       childRoute.setParent(route)
 
       if (this.findRouteByPath(child.path, route.children || [])) {
-        throw new Error(`${child.name || child.path} children route has already been declared`)
+        throw new Error(`${child.path} children route has already been declared`)
       }
 
       route.children.push(childRoute)
@@ -190,7 +170,7 @@ export class LitRouter extends LitElement {
    * @throws {Error} Throws an error if a route with the same path or name already exists.
    */
   setRoute (route: Partial<RouteConfig>): void {
-    if (this.hasRouteByPath(route.path || '') || this.hasRouteByName(route?.name || '')) {
+    if (this.hasRouteByPath(route.path || '')) {
       throw new Error(`Route with path "${route.path}" already exists.`)
     }
 
@@ -220,10 +200,23 @@ export class LitRouter extends LitElement {
   navigate (navigation: Partial<Navigation>): void {
     const { pathname, href } = navigation
 
-    window.history.pushState({}, '', pathname || href)
+    if (!pathname && !href) {
+      throw new Error('Missing path.')
+    }
+
+    const urlInstance = new URL(pathname || href || '', window.location.origin)
+
+    // Add query parameters to URL instance.
+    if (navigation.query && Object.keys(navigation.query).length) {
+      const urlSearchParams = new URLSearchParams(navigation.query)
+
+      urlInstance.search = urlSearchParams.toString()
+    }
+
+    window.history.pushState({}, '', urlInstance.href)
 
     const event = new PopStateEvent('popstate', {
-      state: navigation
+      state: urlInstance
     })
 
     window.dispatchEvent(event)
@@ -305,19 +298,8 @@ export class LitRouter extends LitElement {
       return
     }
 
-    const { name, pathname, href } = state
+    const { pathname, href } = state
     const _pathname = pathname || new URL(href || '').pathname
-
-    if (name) {
-      const route = this.findRouteByName(name)
-
-      if (!route) {
-        return console.warn(new Error(`Route with name "${name}" not found.`))
-      }
-
-      this._currentRoute = route
-      return
-    }
 
     if (!_pathname) {
       throw new Error('Missing path.')

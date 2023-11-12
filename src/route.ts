@@ -7,8 +7,6 @@ export class Route implements RouteConfig {
 
   readonly component!: Component
 
-  name!: string
-
   children: (RouteConfig & Route)[] = []
 
   private _parent: Route | null = null
