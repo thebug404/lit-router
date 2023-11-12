@@ -24,7 +24,7 @@ $router?.setRoutes([
     component: () => import('./pages/dashboard/dashboard-page.js').then((module) => module.DashboardPage),
     children: [
       {
-        path: '/users',
+        path: '/users/:userId?',
         component: () => import('./pages/dashboard/users-page.js').then((module) => module.UsersPage)
       },
       {

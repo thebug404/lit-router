@@ -69,6 +69,49 @@ export class LitRouter extends LitElement {
   }
 
   /**
+   * Retrieves an object representing the parameters present in the current route.
+   * 
+   * @example
+   * ```js
+   * // URL: https://example.com/users/1
+   * router.params() // { userId: '1' }
+   * ```
+   */
+  params (): Record<string, string> {
+    const { pathname, href } = window.location;
+
+    // Find the route corresponding to the current pathname
+    const route = this.findRouteByPath(pathname);
+
+    // If the route is not found, return an empty object
+    if (!route) return {};
+
+    // Extract parameters from the URL using the route's regular expression
+    const { pathname: pathnameObject } = route.urlPattern.exec(href);
+    const { groups } = pathnameObject;
+
+    return groups || {};
+  }
+
+  /**
+   * Retrieves the value of a specific parameter from the current route.
+   *
+   * @param {string} name - The name of the parameter to retrieve.
+   * 
+   * @example
+   * ```js
+   * // URL: https://example.com/users/1
+   * router.param('userId') // '1'
+   * ```
+   */
+  param (name: string): string | null  {
+    const params = this.params();
+
+    return params[name] || null;
+  }
+
+
+  /**
    * Returns the query parameter with the given name.
    * @param name The name of query parameter.
    *
