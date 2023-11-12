@@ -1,19 +1,18 @@
-import { Navigation, NavigationOptions } from './declarations';
+import { Navigation } from './declarations';
 
 /**
  * Navigates to a new route based on the provided navigation options.
  *
  * @param {Partial<Navigation>} navigation - The navigation options, which can include 'name' or 'path'.
- * @param {Partial<NavigationOptions>} option - Optional navigation options like 'preventHistory'.
  */
-export const navigate = (navigation: Partial<Navigation>, option: Partial<NavigationOptions> = {}) => {
+export const navigate = (navigation: Partial<Navigation>) => {
   const router = document.querySelector('lit-router')
 
   if (!router) {
     throw new Error('No router found')
   }
 
-  router.navigate(navigation, option)
+  router.navigate(navigation)
 }
 
 /**
