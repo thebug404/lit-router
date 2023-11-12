@@ -2,7 +2,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { LitElement, PropertyValueMap } from 'lit'
 import { Task } from '@lit/task'
 
-import { NavigationOptions, Navigation, RouteConfig } from './declarations.js'
+import { Navigation, RouteConfig } from './declarations.js'
 import { Route } from './route.js'
 
 declare global {
@@ -217,7 +217,7 @@ export class LitRouter extends LitElement {
    * @param {Partial<Navigation>} navigation - The navigation options, which can include 'name' or 'path'.
    * @throws {Error} Throws an error if 'path' is missing.
    */
-  navigate (navigation: Partial<Navigation>, _options: Partial<NavigationOptions> = {}): void {
+  navigate (navigation: Partial<Navigation>): void {
     const { pathname, href } = navigation
 
     window.history.pushState({}, '', pathname || href)
@@ -254,9 +254,7 @@ export class LitRouter extends LitElement {
       ev.ctrlKey ||
       ev.shiftKey;
     
-    if (ev.defaultPrevented || isNonNavigationClick) {
-      return;
-    }
+    if (ev.defaultPrevented || isNonNavigationClick) return
 
     const anchor = ev
       .composedPath()
@@ -275,23 +273,17 @@ export class LitRouter extends LitElement {
 
     const href = anchor.href;
 
-    if (href === '' || href.startsWith('mailto:')) {
-      return;
-    }
+    if (href === '' || href.startsWith('mailto:')) return
 
     const location = window.location;
 
-    if (anchor.origin !== origin) {
-      return;
-    }
+    if (anchor.origin !== origin) return
 
     ev.preventDefault();
 
-    if (href !== location.href) {
-      window.history.pushState({}, '', href);
+    if (href === location.href) return
 
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    }
+    this.navigate({ href })
   }
 
   /**
