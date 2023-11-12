@@ -7,8 +7,9 @@
 - [x] Basic routing
 - [x] Programmatic navigation
 - [x] Nested routing
-- [ ] Route guards
 - [x] Lazy loading
+- [x] Route params & query
+- [ ] Route guards
 - [ ] Navigation events
 
 ## Installation
@@ -123,9 +124,6 @@ import { router } from './index.js'
 
 // Navigate by path
 router.navigate({ path: '/about' })
-
-// Navigate by name
-router.navigate({ name: 'about' })
 ```
 
 ### Navigate for history
@@ -152,9 +150,6 @@ import { navigate, forward, back } from '@lit-labs/router'
 // Navigate by path
 navigate({ path: '/about' })
 
-// Navigate by name
-navigate({ name: 'about' })
-
 // Navigate forward
 forward()
 
@@ -174,7 +169,6 @@ import { Route } from '@lit-labs/router'
 const routes: Route[] = [
   {
     path: '/',
-    name: 'home',
     component: () => import('./pages/home-page.js').then((m) => m.HomePage)
   }
 ]
@@ -182,4 +176,24 @@ const routes: Route[] = [
 const router = document.querySelector('lit-router')
 
 router.setRoutes(routes)
+```
+
+## Query & Params
+
+`Lit Router` also provides a simple API to get the `query` and `params` of the current route. Here's an example:
+
+```ts
+import { router } from './index.js'
+
+// Get all queries. Example: /users?name=Ivan&age=23
+router.queries() // { name: 'Ivan', age: '23' }
+
+// Get a specific query. Example: /users?name=Ivan&age=23
+router.query('name') // Ivan
+
+// Get all params. Example: /users/1
+router.params() // { id: '1' }
+
+// Get a specific param. Example: /users/1
+router.param('id') // 1
 ```
