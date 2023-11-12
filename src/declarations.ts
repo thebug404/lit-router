@@ -24,14 +24,9 @@ export interface RouteConfig {
 }
 
 export interface Navigation {
-  /**
-   * The path of route.
-   */
   name: string;
-  /**
-   * The path of route.
-   */
-  path: string;
+  pathname: string;
+  href: string;
 }
 
 export interface NavigationOptions {

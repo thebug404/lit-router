@@ -14,8 +14,8 @@ export class DashboardPage extends LitElement {
   protected render (): unknown {
     return html`
       <h1>Dashboard Page</h1>
-      <button @click=${() => navigate({ path: '/about' })}>About</button>
-      <button @click=${() => navigate({ path: '/terms' })}>Terms</button>
+      <button @click=${() => navigate({ pathname: '/about' })}>About</button>
+      <button @click=${() => navigate({ pathname: '/terms' })}>Terms</button>
       <main>
         <slot></slot>
       </main>

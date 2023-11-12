@@ -41,7 +41,9 @@ export class LitRouter extends LitElement {
   }
 
   protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-    this.navigate({ path: window.location.pathname })
+    const { href } = window.location
+
+    this.navigate({ href })
   }
 
   /**
@@ -49,6 +51,37 @@ export class LitRouter extends LitElement {
    */
   get routes (): Route[] {
     return this._routes
+  }
+
+  /**
+   * Get an object containing the query parameters of the current URL.
+   *
+   * @example
+   * ```js
+   * // URL: https://example.com?foo=bar
+   * router.queries() // { foo: 'bar' }
+   * ```
+   */
+  queries (): Record<string, string> {
+    const urlSearchParams = new URLSearchParams(window.location.search)
+
+    return Object.fromEntries(urlSearchParams.entries())
+  }
+
+  /**
+   * Returns the query parameter with the given name.
+   * @param name The name of query parameter.
+   *
+   * @example
+   * ```js
+   * // URL: https://example.com?foo=bar
+   * router.query('foo') // 'bar'
+   * ```
+   */
+  query (name: string): string | null {
+    const queries = this.queries()
+
+    return queries[name] || null
   }
 
   /**
@@ -185,9 +218,9 @@ export class LitRouter extends LitElement {
    * @throws {Error} Throws an error if 'path' is missing.
    */
   navigate (navigation: Partial<Navigation>, _options: Partial<NavigationOptions> = {}): void {
-    const { pathname } = window.location
+    const { pathname, href } = navigation
 
-    window.history.pushState({}, '', pathname)
+    window.history.pushState({}, '', pathname || href)
 
     const event = new PopStateEvent('popstate', {
       state: navigation
@@ -280,7 +313,8 @@ export class LitRouter extends LitElement {
       return
     }
 
-    const { name, path } = state
+    const { name, pathname, href } = state
+    const _pathname = pathname || new URL(href || '').pathname
 
     if (name) {
       const route = this.findRouteByName(name)
@@ -293,14 +327,14 @@ export class LitRouter extends LitElement {
       return
     }
 
-    if (!path) {
+    if (!_pathname) {
       throw new Error('Missing path.')
     }
 
-    const route = this.findRouteByPath(path)
+    const route = this.findRouteByPath(_pathname)
 
     if (!route) {
-      return console.warn(new Error(`Route with path "${path}" not found.`))
+      return console.warn(new Error(`Route with path "${_pathname}" not found.`))
     }
 
     this._currentRoute = route
