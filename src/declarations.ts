@@ -19,6 +19,13 @@ export interface RouteConfig {
   children?: RouteConfig[];
 }
 
+export interface Suscription {
+  /**
+   * Unsubscribe the suscription.
+   */
+  unsubscribe: () => void
+}
+
 export interface Navigation extends URL {
   query: Record<string, string>;
 }

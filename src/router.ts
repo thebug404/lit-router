@@ -2,7 +2,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { LitElement } from 'lit'
 import { Task } from '@lit/task'
 
-import { Navigation, RouteConfig } from './declarations.js'
+import { Navigation, RouteConfig, Suscription } from './declarations.js'
 import { Route } from './route.js'
 
 declare global {
@@ -64,8 +64,8 @@ export class LitRouter extends LitElement {
 
   /**
    * Returns the query parameter with the given name.
-   * @param name The name of query parameter.
    *
+   * @param name The name of query parameter.
    * @example
    * ```js
    * // URL: https://example.com?foo=bar
@@ -91,7 +91,7 @@ export class LitRouter extends LitElement {
     const { pathname, href } = window.location;
 
     // Find the route corresponding to the current pathname
-    const route = this.findRouteByPath(pathname);
+    const route = this._findRouteByPath(pathname);
 
     // If the route is not found, return an empty object
     if (!route) return {};
@@ -107,7 +107,6 @@ export class LitRouter extends LitElement {
    * Retrieves the value of a specific parameter from the current route.
    *
    * @param {string} name - The name of the parameter to retrieve.
-   * 
    * @example
    * ```js
    * // URL: https://example.com/users/1
@@ -121,86 +120,34 @@ export class LitRouter extends LitElement {
   }
 
   /**
-   * Returns true if the router has a route with the given path.
-   * @param path The path of route.
+   * Adds a callback function to be invoked when the router state changes.
+   * 
+   * @param _callback The callback function to be invoked.
+   * @returns {Suscription} Returns a suscription object that can be used to unsubscribe the callback.
+   * @example
+   * ```js
+   * const suscription = router.onChange((router) => {
+   *   console.log(router)
+   * })
+   * 
+   * suscription.unsubscribe()
+   * ```
    */
-  hasRouteByPath (path: string): boolean {
-    return this._routes.some((route) => route.match(path))
-  }
+  onChange (_callback: (router: LitRouter) => void): Suscription {
+    const callback = () => _callback(this)
 
-  /**
-   * Returns the route with the given name.
-   * @param path The path of route.
-   */
-  findRouteByPath (path: string, routes: Route[] = this.routes(), onlyLeafRoute = false): Route | undefined {
-    const hasLeafRoute = (route: Route) => route.children.length === 0
+    window.addEventListener('popstate', callback)
 
-    const findInChildRoutes = (path: string, children: Route[]) => this.findRouteByPath(path, children, onlyLeafRoute)
-
-    for (const route of routes) {
-      if (onlyLeafRoute && route?.match(path)) return route
-
-      if (onlyLeafRoute && route.match(path) && hasLeafRoute(route)) return route
-
-      if (!onlyLeafRoute && route.match(path)) return route
-
-      const childRoute = findInChildRoutes(path, route.children)
-
-      if (childRoute) return childRoute
-    }
-  }
-
-  /**
-   * Creates a new route based on the provided route configuration.
-   * @param routeConfig The route configuration.
-   * @throws {Error} Throws an error if 'path' or 'component' is missing.
-   */
-  private _createRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
-    const { path, component } = routeConfig
-
-    if (!path) {
-      throw new Error('Missing path.')
+    const subscription = {
+      unsubscribe: () => window.removeEventListener('popstate', callback)
     }
 
-    if (!component) {
-      throw new Error('Missing component.')
-    }
-
-    const route = new Route(path, component)
-
-    return route
-  }
-
-  /**
-   * Builds a nested route based on the provided route configuration.
-   * @param routeConfig The route configuration.
-   * @throws {Error} Throws an error if 'path' or 'component' is missing.
-   */
-  private _buildNestedRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
-    const { children } = routeConfig
-
-    const route = this._createRouteFromConfig(routeConfig);
-
-    (children || []).forEach((child) => {
-      const childRoute = this._buildNestedRouteFromConfig({
-        ...child,
-        path: `${route.path}${child.path}`
-      })
-
-      childRoute.setParent(route)
-
-      if (this.findRouteByPath(child.path, route.children || [])) {
-        throw new Error(`${child.path} children route has already been declared`)
-      }
-
-      route.children.push(childRoute)
-    })
-
-    return route
+    return subscription
   }
 
   /**
    * Adds a list of routes to the router configuration.
+   *
    * @param routes A list of routes.
    */
   setRoutes (routes: Partial<RouteConfig>[]): void {
@@ -265,7 +212,87 @@ export class LitRouter extends LitElement {
   }
 
   /**
+   * Returns the route with the given name.
+   *
+   * @param path The path of route.
+   */
+  private _findRouteByPath (
+    path: string,
+    routes: Route[] = this.routes(),
+    onlyLeafRoute = false
+  ): Route | undefined {
+    const hasLeafRoute = (route: Route) => route.children.length === 0
+
+    const findInChildRoutes = (path: string, children: Route[]) =>
+      this._findRouteByPath(path, children, onlyLeafRoute)
+
+    for (const route of routes) {
+      if (onlyLeafRoute && route?.match(path)) return route
+
+      if (onlyLeafRoute && route.match(path) && hasLeafRoute(route)) return route
+
+      if (!onlyLeafRoute && route.match(path)) return route
+
+      const childRoute = findInChildRoutes(path, route.children)
+
+      if (childRoute) return childRoute
+    }
+  }
+
+  /**
+   * Creates a new route based on the provided route configuration.
+   *
+   * @param routeConfig The route configuration.
+   * @throws {Error} Throws an error if 'path' or 'component' is missing.
+   */
+  private _createRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
+    const { path, component } = routeConfig
+
+    if (!path) {
+      throw new Error('Missing path.')
+    }
+
+    if (!component) {
+      throw new Error('Missing component.')
+    }
+
+    const route = new Route(path, component)
+
+    return route
+  }
+  
+  /**
+   * Builds a nested route based on the provided route configuration.
+   *
+   * @param routeConfig The route configuration.
+   * @throws {Error} Throws an error if 'path' or 'component' is missing.
+   */
+  private _buildNestedRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
+    const { children } = routeConfig
+
+    const route = this._createRouteFromConfig(routeConfig);
+
+    (children || []).forEach((child) => {
+      const childRoute = this._buildNestedRouteFromConfig({
+        ...child,
+        path: `${route.path}${child.path}`
+      })
+
+      childRoute.setParent(route)
+
+      if (this._findRouteByPath(child.path, route.children || [])) {
+        throw new Error(`${child.path} children route has already been declared`)
+      }
+
+      route.children.push(childRoute)
+    })
+
+    return route
+  }
+
+  /**
    * Handles the click event on anchor elements.
+   *
    * @param ev The click event.
    */
   private _onHandleAnchorClick (ev: MouseEvent): void {
@@ -307,16 +334,13 @@ export class LitRouter extends LitElement {
     this.navigate({ href })
   }
 
-  /**
-   * Handles the popstate event.
-   */
   private _onHandlePopState (ev: PopStateEvent): void {
     const state = ev.state as Partial<Navigation> | null
 
     if (!state || !Object.keys(state).length) {
       const pathname = window.location.pathname
 
-      const route = this.findRouteByPath(pathname)
+      const route = this._findRouteByPath(pathname)
 
       if (!route) {
         return console.warn(new Error(`Route with path "${pathname}" not found.`))
@@ -333,7 +357,7 @@ export class LitRouter extends LitElement {
       throw new Error('Missing path.')
     }
 
-    const route = this.findRouteByPath(_pathname)
+    const route = this._findRouteByPath(_pathname)
 
     if (!route) {
       return console.warn(new Error(`Route with path "${_pathname}" not found.`))
