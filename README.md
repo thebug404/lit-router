@@ -246,7 +246,11 @@ Below is a list of all the interfaces available on the `Lit Router` API.
 ```ts
 export type HTMLElementConstructor = typeof HTMLElement
 
-export type Component = string | HTMLElementConstructor | (() => TemplateResult) | (() => Promise<unknown>)
+export type Component =
+  string |
+  HTMLElementConstructor |
+  (() => TemplateResult) |
+  (() => Promise<unknown>)
 ```
 
 ### `RouteConfig`

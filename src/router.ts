@@ -63,6 +63,22 @@ export class LitRouter extends LitElement {
   }
 
   /**
+   * Returns the query parameter with the given name.
+   * @param name The name of query parameter.
+   *
+   * @example
+   * ```js
+   * // URL: https://example.com?foo=bar
+   * router.query('foo') // 'bar'
+   * ```
+   */
+  query (name: string): string | null {
+    const queries = this.queries()
+
+    return queries[name] || null
+  }
+
+  /**
    * Retrieves an object representing the parameters present in the current route.
    * 
    * @example
@@ -102,23 +118,6 @@ export class LitRouter extends LitElement {
     const params = this.params();
 
     return params[name] || null;
-  }
-
-
-  /**
-   * Returns the query parameter with the given name.
-   * @param name The name of query parameter.
-   *
-   * @example
-   * ```js
-   * // URL: https://example.com?foo=bar
-   * router.query('foo') // 'bar'
-   * ```
-   */
-  query (name: string): string | null {
-    const queries = this.queries()
-
-    return queries[name] || null
   }
 
   /**
