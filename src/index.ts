@@ -35,6 +35,6 @@ $router?.setRoutes([
   }
 ])
 
-console.log('router: ', $router?.routes)
+console.log('router: ', $router?.routes())
 
 export const router = $router

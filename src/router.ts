@@ -1,5 +1,5 @@
 import { customElement, state } from 'lit/decorators.js'
-import { LitElement, PropertyValueMap } from 'lit'
+import { LitElement } from 'lit'
 import { Task } from '@lit/task'
 
 import { Navigation, RouteConfig } from './declarations.js'
@@ -40,16 +40,10 @@ export class LitRouter extends LitElement {
     window.removeEventListener('click', this._onHandleAnchorClick.bind(this))
   }
 
-  protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-    const { href } = window.location
-
-    this.navigate({ href })
-  }
-
   /**
    * List of registered routes.
    */
-  get routes (): Route[] {
+  routes (): Route[] {
     return this._routes
   }
 
@@ -139,7 +133,7 @@ export class LitRouter extends LitElement {
    * Returns the route with the given name.
    * @param path The path of route.
    */
-  findRouteByPath (path: string, routes: Route[] = this.routes, onlyLeafRoute = false): Route | undefined {
+  findRouteByPath (path: string, routes: Route[] = this.routes(), onlyLeafRoute = false): Route | undefined {
     const hasLeafRoute = (route: Route) => route.children.length === 0
 
     const findInChildRoutes = (path: string, children: Route[]) => this.findRouteByPath(path, children, onlyLeafRoute)
@@ -207,22 +201,6 @@ export class LitRouter extends LitElement {
   }
 
   /**
-   * Adds a new route to the router configuration.
-   *
-   * @param {RouteOptions} route The route to be added, either as a `Route` instance or a `RouteOptions` object.
-   * @throws {Error} Throws an error if a route with the same path or name already exists.
-   */
-  setRoute (route: Partial<RouteConfig>): void {
-    if (this.hasRouteByPath(route.path || '')) {
-      throw new Error(`Route with path "${route.path}" already exists.`)
-    }
-
-    const _route = this._createRouteFromConfig(route)
-
-    this._routes.push(_route)
-  }
-
-  /**
    * Adds a list of routes to the router configuration.
    * @param routes A list of routes.
    */
@@ -232,6 +210,14 @@ export class LitRouter extends LitElement {
 
       this._routes.push(_route)
     }
+
+    // We get the current route from the URL and then 
+    // navigate to the current route to trigger the rendering.
+    // This is necessary to render the content when the routes
+    // have been set for the first time.
+    const { href } = window.location
+
+    this.navigate({ href })
   }
 
   /**
