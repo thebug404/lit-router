@@ -10,7 +10,6 @@
 - [x] Lazy loading
 - [x] Route params & query
 - [ ] Route guards
-- [ ] Navigation events
 
 ## Installation
 
@@ -123,7 +122,7 @@ router.setRoutes(routes)
 import { router } from './index.js'
 
 // Navigate by path
-router.navigate({ path: '/about' })
+router.navigate({ pathname: '/about' })
 ```
 
 ### Navigate for history
@@ -148,7 +147,7 @@ router.back()
 import { navigate, forward, back } from '@lit-labs/router'
 
 // Navigate by path
-navigate({ path: '/about' })
+navigate({ pathname: '/about' })
 
 // Navigate forward
 forward()
@@ -196,4 +195,74 @@ router.params() // { id: '1' }
 
 // Get a specific param. Example: /users/1
 router.param('id') // 1
+```
+
+## API
+
+Below is a list of all the methods available on the `Lit Router` API.
+
+### `.routes()`
+
+Returns the list of routes.
+
+### `.setRoutes(routes: Partial<RouteConfig>[])`
+
+Method responsible for setting application routes. It receives an array of type [RouteConfig](#routeconfig) as a parameter.
+
+### `.navigate(options: Partial<Navigation>)`
+
+Method responsible for navigating to a specific route. It receives an object of type [Navigation](#navigation) as a parameter.
+
+### `.forward()`
+
+Method responsible for navigating forward.
+
+### `.back()`
+
+Method responsible for navigating back.
+
+### `.queries()`
+
+Method responsible for returning all queries.
+
+### `.query(key: string)`
+
+Method responsible for returning a specific query.
+
+### `.params()`
+
+Method responsible for returning all params.
+
+### `.param(key: string)`
+
+Method responsible for returning a specific param.
+
+## Interfaces
+
+Below is a list of all the interfaces available on the `Lit Router` API.
+
+### `Component`
+
+```ts
+export type HTMLElementConstructor = typeof HTMLElement
+
+export type Component = string | HTMLElementConstructor | (() => TemplateResult) | (() => Promise<unknown>)
+```
+
+### `RouteConfig`
+
+```ts
+interface RouteConfig {
+  path: string;
+  component: Component;
+  children?: RouteConfig[];
+}
+```
+
+### `Navigation`
+
+```ts
+interface Navigation extends URL {
+  query: Record<string, string>;
+}
 ```
