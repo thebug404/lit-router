@@ -24,7 +24,7 @@ export class LitRouter extends LitElement {
     args: () => [this._currentRoute]
   })
 
-  connectedCallback(): void {
+  connectedCallback (): void {
     super.connectedCallback()
 
     window.addEventListener('popstate', this._onHandlePopState.bind(this))
@@ -32,7 +32,7 @@ export class LitRouter extends LitElement {
     window.addEventListener('click', this._onHandleAnchorClick.bind(this))
   }
 
-  disconnectedCallback(): void {
+  disconnectedCallback (): void {
     super.disconnectedCallback()
 
     window.removeEventListener('popstate', this._onHandlePopState.bind(this))
@@ -173,13 +173,13 @@ export class LitRouter extends LitElement {
    * @throws {Error} Throws an error if 'path' is missing.
    */
   navigate (navigation: Partial<Navigation>): void {
-    const { pathname, href } = navigation
+    const { path, href } = navigation
 
-    if (!pathname && !href) {
+    if (!path && !href) {
       throw new Error('Missing path.')
     }
 
-    const urlInstance = new URL(pathname || href || '', window.location.origin)
+    const urlInstance = new URL(path || href || '', window.location.origin)
 
     // Add query parameters to URL instance.
     if (navigation.query && Object.keys(navigation.query).length) {
@@ -212,14 +212,17 @@ export class LitRouter extends LitElement {
   }
 
   /**
-   * Returns the route with the given name.
+   * Find a route in the navigation hierarchy.
    *
-   * @param path The path of route.
+   * @private
+   * @param {string} path - The path to search for.
+   * @param {Route[]} [routes=this.routes()] - The array of routes to search within.
+   * @param {boolean} [onlyLeafRoute=false] - If true, only consider leaf routes (routes without children).
    */
   private _findRouteByPath (
     path: string,
     routes: Route[] = this.routes(),
-    onlyLeafRoute = false
+    onlyLeafRoute: boolean = false
   ): Route | undefined {
     const hasLeafRoute = (route: Route) => route.children.length === 0
 
@@ -334,33 +337,13 @@ export class LitRouter extends LitElement {
     this.navigate({ href })
   }
 
-  private _onHandlePopState (ev: PopStateEvent): void {
-    const state = ev.state as Partial<Navigation> | null
+  private _onHandlePopState (_ev: PopStateEvent): void {
+    const pathname = window.location.pathname
 
-    if (!state || !Object.keys(state).length) {
-      const pathname = window.location.pathname
-
-      const route = this._findRouteByPath(pathname)
-
-      if (!route) {
-        return console.warn(new Error(`Route with path "${pathname}" not found.`))
-      }
-  
-      this._currentRoute = route
-      return
-    }
-
-    const { pathname, href } = state
-    const _pathname = pathname || new URL(href || '').pathname
-
-    if (!_pathname) {
-      throw new Error('Missing path.')
-    }
-
-    const route = this._findRouteByPath(_pathname)
+    const route = this._findRouteByPath(pathname)
 
     if (!route) {
-      return console.warn(new Error(`Route with path "${_pathname}" not found.`))
+      return console.warn(new Error(`Route with path "${pathname}" not found.`))
     }
 
     this._currentRoute = route

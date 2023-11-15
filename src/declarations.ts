@@ -27,12 +27,6 @@ export interface Suscription {
 }
 
 export interface Navigation extends URL {
+  path: string;
   query: Record<string, string>;
-}
-
-export interface NavigationOptions {
-  /**
-   * The router will not update the browser history. For default is `false`.
-   */
-  preventHistory?: boolean;
 }
