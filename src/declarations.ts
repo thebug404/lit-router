@@ -1,8 +1,14 @@
 import { TemplateResult } from 'lit'
 
+export const TAG_NAME_ROUTER = 'lit-router' as const
+
 export type HTMLElementConstructor = typeof HTMLElement
 
-export type Component = string | HTMLElementConstructor | (() => TemplateResult) | (() => Promise<unknown>)
+export type Component =
+  string |
+  HTMLElementConstructor |
+  (() => TemplateResult) |
+  (() => Promise<unknown>)
 
 export interface RouteConfig {
   /**
@@ -26,7 +32,17 @@ export interface Suscription {
   unsubscribe: () => void
 }
 
-export interface Navigation extends URL {
+export interface Navigation {
+  /**
+   * Navigation path.
+   */
   path: string;
+  /**
+   * Href associated with the navigation path.
+   */
+  href: string;
+  /**
+   * Query associated with the navigation path in the form of key-value pairs.
+   */
   query: Record<string, string>;
 }

@@ -9,7 +9,10 @@
 - [x] Nested routing
 - [x] Lazy loading
 - [x] Route params & query
+- [x] Remove the inherence of interface Navigation of URL.
 - [ ] Route guards
+- [ ] Validate the 404 page.
+- [ ] Add tests.
 
 ## Installation
 
@@ -122,7 +125,7 @@ router.setRoutes(routes)
 import { router } from './index.js'
 
 // Navigate by path
-router.navigate({ pathname: '/about' })
+router.navigate({ path: '/about' })
 ```
 
 ### Navigate for history
@@ -147,7 +150,7 @@ router.back()
 import { navigate, forward, back } from '@lit-labs/router'
 
 // Navigate by path
-navigate({ pathname: '/about' })
+navigate({ path: '/about' })
 
 // Navigate forward
 forward()

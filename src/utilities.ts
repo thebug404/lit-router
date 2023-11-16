@@ -1,4 +1,4 @@
-import { Navigation } from './declarations';
+import { Navigation, TAG_NAME_ROUTER } from './declarations';
 
 /**
  * Navigates to a new route based on the provided navigation options.
@@ -6,7 +6,7 @@ import { Navigation } from './declarations';
  * @param {Partial<Navigation>} navigation - The navigation options, which can include 'name' or 'path'.
  */
 export const navigate = (navigation: Partial<Navigation>) => {
-  const router = document.querySelector('lit-router')
+  const router = document.querySelector(TAG_NAME_ROUTER)
 
   if (!router) {
     throw new Error('No router found')

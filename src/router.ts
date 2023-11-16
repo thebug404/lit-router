@@ -2,16 +2,16 @@ import { customElement, state } from 'lit/decorators.js'
 import { LitElement } from 'lit'
 import { Task } from '@lit/task'
 
-import { Navigation, RouteConfig, Suscription } from './declarations.js'
+import { Navigation, RouteConfig, Suscription, TAG_NAME_ROUTER } from './declarations.js'
 import { Route } from './route.js'
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lit-router': LitRouter
+    [TAG_NAME_ROUTER]: LitRouter
   }
 }
 
-@customElement("lit-router")
+@customElement(TAG_NAME_ROUTER)
 export class LitRouter extends LitElement {
   @state()
   private _currentRoute: Route | null = null
@@ -182,11 +182,10 @@ export class LitRouter extends LitElement {
     const urlInstance = new URL(path || href || '', window.location.origin)
 
     // Add query parameters to URL instance.
-    if (navigation.query && Object.keys(navigation.query).length) {
-      const urlSearchParams = new URLSearchParams(navigation.query)
-
-      urlInstance.search = urlSearchParams.toString()
-    }
+    Object.keys(navigation.query || {}).forEach((key) => {
+      const value = navigation.query![key]
+      urlInstance.searchParams.append(key, value)
+    })
 
     window.history.pushState({}, '', urlInstance.href)
 
