@@ -2,6 +2,39 @@
 
 `Lit Router` is the official router for [Lit](https://lit.dev/). It deeply integrates with **Lit** core to make building Single Page Applications with **Lit** a breeze.
 
+## Table of Contents
+
+- [lit-labs/router](#lit-labsrouter)
+  - [Table of Contents](#table-of-contents)
+  - [Roadmap](#roadmap)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Defining routes](#defining-routes)
+    - [Tag Name](#tag-name)
+    - [Component Class](#component-class)
+  - [Dynamic Routes Matching](#dynamic-routes-matching)
+  - [Lazy Loading](#lazy-loading)
+  - [Nested routes](#nested-routes)
+  - [Displayed 404 Page](#displayed-404-page)
+  - [Programmatic Navigation](#programmatic-navigation)
+    - [Navigate for history](#navigate-for-history)
+    - [Navigation utilities](#navigation-utilities)
+  - [Query \& Params](#query--params)
+  - [API](#api)
+    - [`.routes()`](#routes)
+    - [`.setRoutes(routes: Partial<RouteConfig>[])`](#setroutesroutes-partialrouteconfig)
+    - [`.navigate(options: Partial<Navigation>)`](#navigateoptions-partialnavigation)
+    - [`.forward()`](#forward)
+    - [`.back()`](#back)
+    - [`.queries()`](#queries)
+    - [`.query(key: string)`](#querykey-string)
+    - [`.params()`](#params)
+    - [`.param(key: string)`](#paramkey-string)
+  - [Interfaces](#interfaces)
+    - [`Component`](#component)
+    - [`RouteConfig`](#routeconfig)
+    - [`Navigation`](#navigation)
+
 ## Roadmap
 
 - [x] Basic routing
@@ -10,8 +43,8 @@
 - [x] Lazy loading
 - [x] Route params & query
 - [x] Remove the inherence of interface Navigation of URL.
+- [x] Validate the 404 page.
 - [ ] Route guards
-- [ ] Validate the 404 page.
 - [ ] Add tests.
 
 ## Installation
@@ -30,19 +63,19 @@ Creating a single-page application with `Lit` + `Lit Router` is a piece of cake!
 <lit-router></lit-router>
 ```
 
-**Typescript/Javascript**
+**Typescript**
 
 ```js
 // Import Lit Router
 import { html } from 'lit'
-import '@lit-labs/router'
+import { Route } from '@lit-labs/router'
 
 // Import Pages/Views
 import { HomePage } from './pages/home-page.js'
 import './pages/about-page.js'
 
 // Define your routes
-const routes = [
+const routes: Route[] = [
   { path: '/', component: HomePage },
   { path: '/about', component: 'about-page' },
   {
@@ -65,8 +98,6 @@ router.setRoutes(routes)
 ### Tag Name
 
 ```ts
-import { Route } from '@lit-labs/router'
-
 import './pages/home-page.js'
 import './pages/about-page.js'
 
@@ -74,10 +105,6 @@ const routes: Route[] = [
   { path: '/', component: 'home-page' },
   { path: '/about', component: 'about-page' }
 ]
-
-const router = document.querySelector('lit-router')
-
-router.setRoutes(routes)
 ```
 
 > **Warning**
@@ -86,8 +113,6 @@ router.setRoutes(routes)
 ### Component Class
 
 ```ts
-import { Route } from '@lit-labs/router'
-
 import { HomePage } from './pages/home-page.js'
 import { AboutPage } from './pages/about-page.js'
 
@@ -95,27 +120,62 @@ const routes: Route[] = [
   { path: '/', component: HomePage },
   { path: '/about', component: AboutPage }
 ]
-
-const router = document.querySelector('lit-router')
-
-router.setRoutes(routes)
 ```
 
-### Lazy Loading
+## Dynamic Routes Matching
+
+`Lit Router` also provides a simple API to define dynamic routes. We can define dynamic routes of many types. Below are some examples:
 
 ```ts
-import { Route } from '@lit-labs/router'
+import { UserPage } from './pages/user-page.js'
 
+const routes: Route[] = [
+  { path: '/users/:id', component: UserPage }
+]
+```
+
+> **Info**
+> The API used to define dynamic route is [URLPattern](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern).
+
+## Lazy Loading
+
+Lazy loading is a technique for loading pages on demand. This means that we only load the page when the user navigates to it. This is very useful when we have a large application and we want to improve the performance of our application. Here's an example:
+
+```ts
 const routes: Route[] = [
   {
     path: '/',
     component: () => import('./pages/home-page.js').then((m) => m.HomePage)
   }
 ]
+```
 
-const router = document.querySelector('lit-router')
+## Nested routes
 
-router.setRoutes(routes)
+Many times we need to define nested because we have a page that has a sidebar and we want to render the content of the sidebar in a specific place. For this we can use the `children` property. Here's an example:
+
+```ts
+const routes: Route[] = [
+  {
+    path: '/',
+    component: DashboardPage,
+    children: [
+      { path: '/settings', component: SettingsPage }
+    ]
+  }
+]
+```
+
+## Displayed 404 Page
+
+To display a 404 page, we can define a route with the `*` path. Here's an example:
+
+```ts
+const routes: Route[] = [
+  { path: '/', component: HomePage },
+  { path: '/about', component: AboutPage },
+  { path: '*', component: NotFoundPage }
+]
 ```
 
 ## Programmatic Navigation

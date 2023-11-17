@@ -33,6 +33,10 @@ $router?.setRoutes([
         component: () => import('./pages/dashboard/settings-page.js').then((module) => module.SettingsPage)
       }
     ]
+  },
+  {
+    path: '*',
+    component: () => import('./pages/not-found-page.js').then((module) => module.NotFoundPage)
   }
 ])
 
