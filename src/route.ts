@@ -1,5 +1,3 @@
-import { TemplateResult } from 'lit'
-
 import { Component, HTMLElementConstructor, RouteConfig } from './declarations.js'
 
 export class Route implements RouteConfig {
@@ -43,16 +41,10 @@ export class Route implements RouteConfig {
       if (component.prototype instanceof HTMLElement) {
         return new (component as HTMLElementConstructor)();
       }
-  
-      const result = (component as () => TemplateResult | (() => Promise<unknown>))();
-  
-      if (result instanceof Promise) {
-        const Module = await result;
-  
-        return new Module();
-      }
-  
-      return result;
+
+      const Module = await (component as () => Promise<HTMLElementConstructor>)();
+
+      return new Module()
     }
   
     return document.createElement(component as string);

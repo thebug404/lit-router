@@ -1,5 +1,3 @@
-import { TemplateResult } from 'lit'
-
 export const TAG_NAME_ROUTER = 'lit-router' as const
 
 export type HTMLElementConstructor = typeof HTMLElement
@@ -7,8 +5,7 @@ export type HTMLElementConstructor = typeof HTMLElement
 export type Component =
   string |
   HTMLElementConstructor |
-  (() => TemplateResult) |
-  (() => Promise<unknown>)
+  (() => Promise<HTMLElementConstructor>)
 
 export interface RouteConfig {
   /**

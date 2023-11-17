@@ -1,4 +1,5 @@
 // Imports pages
+import { HomePage } from './pages/home-page.js'
 import './pages/about-page.js'
 
 // Imports router
@@ -9,7 +10,7 @@ const $router = document.querySelector('lit-router')
 $router?.setRoutes([
   {
     path: '/',
-    component: () => import('./pages/home-page.js').then((module) => module.HomePage)
+    component: HomePage
   },
   {
     path: '/about',

@@ -45,7 +45,10 @@ import './pages/about-page.js'
 const routes = [
   { path: '/', component: HomePage },
   { path: '/about', component: 'about-page' },
-  { path: '/users/:id', component: () => html`<h1>Users</h1>` },
+  {
+    path: '/terms',
+    component: () => import('./pages/terms-page.js').then((module) => module.TermsPage)
+  }
 ]
 
 // Get a router
@@ -59,7 +62,7 @@ router.setRoutes(routes)
 
 `Lit Router` provides a simple API to define routes. We can define router of many types. Below are some examples:
 
-**Tag Name**
+### Tag Name
 
 ```ts
 import { Route } from '@lit-labs/router'
@@ -80,7 +83,7 @@ router.setRoutes(routes)
 > **Warning**
 > When defining our routes in this way you must have special control with the name of your component that you have defined through the `@customElement` or `customElements.define`. Otherwise your view cannot be rendered.
 
-**Component Class**
+### Component Class
 
 ```ts
 import { Route } from '@lit-labs/router'
@@ -98,24 +101,22 @@ const router = document.querySelector('lit-router')
 router.setRoutes(routes)
 ```
 
-**Component Function**
+### Lazy Loading
 
 ```ts
 import { Route } from '@lit-labs/router'
-import { html } from 'lit'
 
 const routes: Route[] = [
-  { path: '/', component: () => html`<h1>Home</h1>` },
-  { path: '/about', component: () => html`<h1>About</h1>` }
+  {
+    path: '/',
+    component: () => import('./pages/home-page.js').then((m) => m.HomePage)
+  }
 ]
 
 const router = document.querySelector('lit-router')
 
 router.setRoutes(routes)
 ```
-
-> **Warning**
-> When defining our routes of this type, we cannot nest routes.
 
 ## Programmatic Navigation
 
@@ -157,27 +158,6 @@ forward()
 
 // Navigate back
 back()
-```
-
-## Lazy Loading
-
-When developing applications that utilize bundles, the JavaScript bundle can grow substantially in size, potentially impacting page load times. To enhance efficiency, it's advantageous to break down the components of each route into distinct chunks, loading them only when the corresponding route is accessed.
-
-`Lit Router` readily offers support for dynamic imports, allowing you to substitute static imports with dynamic ones:
-
-```ts
-import { Route } from '@lit-labs/router'
-
-const routes: Route[] = [
-  {
-    path: '/',
-    component: () => import('./pages/home-page.js').then((m) => m.HomePage)
-  }
-]
-
-const router = document.querySelector('lit-router')
-
-router.setRoutes(routes)
 ```
 
 ## Query & Params
@@ -252,8 +232,7 @@ export type HTMLElementConstructor = typeof HTMLElement
 export type Component =
   string |
   HTMLElementConstructor |
-  (() => TemplateResult) |
-  (() => Promise<unknown>)
+  (() => Promise<HTMLElementConstructor>)
 ```
 
 ### `RouteConfig`
@@ -269,7 +248,9 @@ interface RouteConfig {
 ### `Navigation`
 
 ```ts
-interface Navigation extends URL {
+interface Navigation {
+  path: string;
+  href: string;
   query: Record<string, string>;
 }
 ```
