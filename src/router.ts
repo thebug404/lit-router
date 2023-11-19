@@ -205,7 +205,7 @@ export class LitRouter extends LitElement {
       return console.warn(new Error(`Route with path "${pathname}" not found.`))
     }
 
-    const isAllowed = await route.resolveRecursiveGuard()
+    const isAllowed = await route.resolveRecursiveGuard(this)
 
     if (!isAllowed) return
 

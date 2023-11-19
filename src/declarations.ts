@@ -1,3 +1,5 @@
+import { LitRouter } from "./router";
+
 export const TAG_NAME_ROUTER = 'lit-router' as const
 
 export type HTMLElementConstructor = typeof HTMLElement
@@ -7,7 +9,7 @@ export type Component =
   HTMLElementConstructor |
   (() => Promise<HTMLElementConstructor>)
 
-export type Guard = () => boolean | Promise<boolean>
+export type Guard = (router: LitRouter) => boolean | Promise<boolean>
 
 export interface RouteConfig {
   /**

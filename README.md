@@ -20,6 +20,7 @@
     - [Navigate for history](#navigate-for-history)
     - [Navigation utilities](#navigation-utilities)
   - [Query \& Params](#query--params)
+  - [Guards](#guards)
   - [API](#api)
     - [`.routes()`](#routes)
     - [`.setRoutes(routes: Partial<RouteConfig>[])`](#setroutesroutes-partialrouteconfig)
@@ -241,6 +242,32 @@ router.params() // { id: '1' }
 
 // Get a specific param. Example: /users/1
 router.param('id') // 1
+```
+
+## Guards
+
+The guards are functions that are executed before entering a route. They are very useful when we want to validate that the user has the necessary permissions to enter a route. Here's an example:
+
+```ts
+// Define your guard
+const isAdminGuard = (router) => {
+  const user = localStorage.getItem('user')
+
+  if (user && user.role === 'admin') return true
+
+  router.navigate({ path: '/login' })
+
+  return false
+}
+
+const routes: Route[] = [
+  {
+    path: '/admin',
+    component: AdminPage,
+    // Execute the guard before entering the route
+    beforeEnter: [isAdminGuard]
+  }
+]
 ```
 
 ## API

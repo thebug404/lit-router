@@ -1,4 +1,5 @@
 import { Component, Guard, HTMLElementConstructor, RouteConfig } from './declarations.js'
+import { LitRouter } from './router.js'
 
 export class Route implements RouteConfig {
   readonly path!: string
@@ -52,16 +53,16 @@ export class Route implements RouteConfig {
     return document.createElement(component as string);
   }
 
-  async resolveRecursiveGuard (): Promise<boolean> {
+  async resolveRecursiveGuard (router: LitRouter): Promise<boolean> {
     if (!this.beforeEnter.length) {
       return Promise.resolve(true)
     }
 
-    const guards = this.beforeEnter.map((guard) => guard())
+    const guards = this.beforeEnter.map((guard) => guard(router))
     const results = await Promise.all(guards)
 
     const parentGuardResult = this._parent
-      ? await this._parent.resolveRecursiveGuard()
+      ? await this._parent.resolveRecursiveGuard(router)
       : true
 
     return results.every((result) => result) && parentGuardResult
