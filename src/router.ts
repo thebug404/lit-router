@@ -67,15 +67,13 @@ export class LitRouter extends LitElement implements Router {
   params (): Record<string, string> {
     const { pathname, href } = window.location;
 
-    // Find the route corresponding to the current pathname
     const route = this._findRouteByPath(pathname);
 
-    // If the route is not found, return an empty object
     if (!route) return {};
 
     // Extract parameters from the URL using the route's regular expression
-    const { pathname: pathnameObject } = route.urlPattern.exec(href);
-    const { groups } = pathnameObject;
+    const { pathname: pathnameObject } = route.urlPattern.exec(href) || {};
+    const { groups } = pathnameObject || {};
 
     return groups || {};
   }
