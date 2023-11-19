@@ -1,4 +1,4 @@
-import { Component, HTMLElementConstructor, RouteConfig } from './declarations.js'
+import { Component, Guard, HTMLElementConstructor, RouteConfig } from './declarations.js'
 
 export class Route implements RouteConfig {
   readonly path!: string
@@ -6,6 +6,8 @@ export class Route implements RouteConfig {
   readonly component!: Component
 
   children: (RouteConfig & Route)[] = []
+
+  beforeEnter: Guard[] = []
 
   private _parent: Route | null = null
 
@@ -48,6 +50,21 @@ export class Route implements RouteConfig {
     }
   
     return document.createElement(component as string);
+  }
+
+  async resolveRecursiveGuard (): Promise<boolean> {
+    if (!this.beforeEnter.length) {
+      return Promise.resolve(true)
+    }
+
+    const guards = this.beforeEnter.map((guard) => guard())
+    const results = await Promise.all(guards)
+
+    const parentGuardResult = this._parent
+      ? await this._parent.resolveRecursiveGuard()
+      : true
+
+    return results.every((result) => result) && parentGuardResult
   }
 
   /**

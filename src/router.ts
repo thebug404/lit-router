@@ -2,7 +2,14 @@ import { customElement, state } from 'lit/decorators.js'
 import { LitElement } from 'lit'
 import { Task } from '@lit/task'
 
-import { Navigation, RouteConfig, Suscription, TAG_NAME_ROUTER } from './declarations.js'
+import {
+  NavigationOptions,
+  TAG_NAME_ROUTER,
+  RouteConfig,
+  Suscription,
+  Navigation
+} from './declarations.js'
+
 import { Route } from './route.js'
 
 declare global {
@@ -169,31 +176,44 @@ export class LitRouter extends LitElement {
   /**
    * Navigates to a new route based on the provided navigation options.
    *
-   * @param {Partial<Navigation>} navigation - The navigation options, which can include 'name' or 'path'.
-   * @throws {Error} Throws an error if 'path' is missing.
+   * @param {Partial<Navigation>} navigation The navigation options, which can include 'name' or 'path'.
+   * @param {Partial<NavigationOptions>} options The navigation options.
    */
-  navigate (navigation: Partial<Navigation>): void {
+  async navigate (navigation: Partial<Navigation>, options: Partial<NavigationOptions> = {}): Promise<void> {
+    const { enableHistoryPushState } = Object.assign(
+      { enableHistoryPushState: true },
+      options
+    )
+
     const { path, href } = navigation
 
     if (!path && !href) {
-      throw new Error('Missing path.')
+      return console.error(new Error('Missing path.'));
     }
 
     const urlInstance = new URL(path || href || '', window.location.origin)
 
-    // Add query parameters to URL instance.
     Object.keys(navigation.query || {}).forEach((key) => {
       const value = navigation.query![key]
       urlInstance.searchParams.append(key, value)
     })
 
+    const { pathname } = urlInstance
+    const route = this._findRouteByPath(pathname)
+
+    if (!route) {
+      return console.warn(new Error(`Route with path "${pathname}" not found.`))
+    }
+
+    const isAllowed = await route.resolveRecursiveGuard()
+
+    if (!isAllowed) return
+
+    this._currentRoute = route
+
+    if (!enableHistoryPushState) return
+
     window.history.pushState({}, '', urlInstance.href)
-
-    const event = new PopStateEvent('popstate', {
-      state: urlInstance
-    })
-
-    window.dispatchEvent(event)
   }
 
   /**
@@ -260,6 +280,10 @@ export class LitRouter extends LitElement {
 
     const route = new Route(path, component)
 
+    if (routeConfig.beforeEnter) {
+      route.beforeEnter = routeConfig.beforeEnter
+    }
+
     return route
   }
   
@@ -267,7 +291,6 @@ export class LitRouter extends LitElement {
    * Builds a nested route based on the provided route configuration.
    *
    * @param routeConfig The route configuration.
-   * @throws {Error} Throws an error if 'path' or 'component' is missing.
    */
   private _buildNestedRouteFromConfig (routeConfig: Partial<RouteConfig>): Route {
     const { children } = routeConfig
@@ -283,7 +306,9 @@ export class LitRouter extends LitElement {
       childRoute.setParent(route)
 
       if (this._findRouteByPath(child.path, route.children || [])) {
-        throw new Error(`${child.path} children route has already been declared`)
+        return console.error(
+          new Error(`${child.path} children route has already been declared`)
+        )
       }
 
       route.children.push(childRoute)
@@ -336,16 +361,13 @@ export class LitRouter extends LitElement {
     this.navigate({ href })
   }
 
-  private _onHandlePopState (_ev: PopStateEvent): void {
-    const pathname = window.location.pathname
+  private async _onHandlePopState (_ev: PopStateEvent): Promise<void> {
+    const { href } = window.location
 
-    const route = this._findRouteByPath(pathname)
-
-    if (!route) {
-      return console.warn(new Error(`Route with path "${pathname}" not found.`))
-    }
-
-    this._currentRoute = route
+    this.navigate(
+      { href },
+      { enableHistoryPushState: false }
+    )
   }
 
   protected createRenderRoot (): Element | ShadowRoot {

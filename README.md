@@ -44,7 +44,10 @@
 - [x] Route params & query
 - [x] Remove the inherence of interface Navigation of URL.
 - [x] Validate the 404 page.
-- [ ] Route guards
+- [x] Route guards
+- [x] Prevent add element in the history when execute beforeEnter.
+- [x] Change the method os navigation.
+- [ ] Create a domain errors.
 - [ ] Add tests.
 
 ## Installation
