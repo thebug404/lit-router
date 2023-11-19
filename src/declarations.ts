@@ -1,4 +1,4 @@
-import { LitRouter } from "./router";
+import { Route } from './route.js'
 
 export const TAG_NAME_ROUTER = 'lit-router' as const
 
@@ -9,7 +9,92 @@ export type Component =
   HTMLElementConstructor |
   (() => Promise<HTMLElementConstructor>)
 
-export type Guard = (router: LitRouter) => boolean | Promise<boolean>
+export type Guard = (router: Router) => boolean | Promise<boolean>
+
+export interface Router {
+  /**
+   * List of registered routes.
+   */
+  routes (): Route[];
+  /**
+   * Get an object containing the query parameters of the current URL.
+   *
+   * @example
+   * ```js
+   * // URL: https://example.com?foo=bar
+   * router.queries() // { foo: 'bar' }
+   * ```
+   */
+  queries (): Record<string, string>;
+  /**
+   * Returns the query parameter with the given name.
+   *
+   * @param name The name of query parameter.
+   * @example
+   * ```js
+   * // URL: https://example.com?foo=bar
+   * router.query('foo') // 'bar'
+   * ```
+   */
+  query (name: string): string | null;
+  /**
+   * Retrieves an object representing the parameters present in the current route.
+   * 
+   * @example
+   * ```js
+   * // URL: https://example.com/users/1
+   * router.params() // { userId: '1' }
+   * ```
+   */
+  params (): Record<string, string>;
+  /**
+   * Retrieves the value of a specific parameter from the current route.
+   *
+   * @param {string} name - The name of the parameter to retrieve.
+   * @example
+   * ```js
+   * // URL: https://example.com/users/1
+   * router.param('userId') // '1'
+   * ```
+   */
+  param (name: string): string | null;
+  /**
+   * Adds a callback function to be invoked when the router state changes.
+   * 
+   * @param _callback The callback function to be invoked.
+   * @returns {Suscription} Returns a suscription object that can be used to unsubscribe the callback.
+   * @example
+   * ```js
+   * const suscription = router.onChange((router) => {
+   *   console.log(router)
+   * })
+   * 
+   * suscription.unsubscribe()
+   * ```
+   */
+  onChange (callback: (router: Router) => void): Suscription;
+  /**
+   * Adds a list of routes to the router configuration.
+   *
+   * @param routes A list of routes.
+   */
+  setRoutes (routes: Partial<RouteConfig>[]): void;
+  /**
+   * Navigates to a new route based on the provided navigation options.
+   *
+   * @param {Partial<Navigation>} navigation The navigation options, which can include 'name' or 'path'.
+   * @param {Partial<NavigationOptions>} options The navigation options.
+   */
+  navigate (navigation: Partial<Navigation>, options?: Partial<NavigationOptions>): Promise<void>;
+  /**
+   * Navigates to the next page in session history.
+   */
+  forward (): void;
+  /**
+   * Navigates to the previous page in session history.
+   */
+  back (): void;
+}
 
 export interface RouteConfig {
   /**
