@@ -61,14 +61,14 @@ export class LitRouter extends LitElement implements Router {
   }
 
   params (name: string = ''): Record<string, string> | string | null {
-    const { pathname, href } = window.location;
+    const { origin, pathname } = window.location;
 
     const route = this._findRouteByPath(pathname);
 
     if (!route) return {};
 
     // Extract parameters from the URL using the route's regular expression
-    const { pathname: pathnameObject } = route.urlPattern.exec(href) || {};
+    const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
     const { groups } = pathnameObject || {};
 
     if (name) return groups[name] || null;
@@ -143,14 +143,14 @@ export class LitRouter extends LitElement implements Router {
         return Object.fromEntries(urlSearchParams.entries())
       },
       params: (name?: string) => {
-        const { pathname, href } = urlInstance
+        const { pathname, origin } = urlInstance
 
         const route = this._findRouteByPath(pathname)
 
         if (!route) return {};
 
         // Extract parameters from the URL using the route's regular expression
-        const { pathname: pathnameObject } = route.urlPattern.exec(href) || {};
+        const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
         const { groups } = pathnameObject || {};
 
         if (name) return groups[name] || null;
