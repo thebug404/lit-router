@@ -55,9 +55,7 @@ export class LitRouter extends LitElement implements Router {
   qs (name: string = ''): Record<string, string> | string | null {
     const urlSearchParams = new URLSearchParams(window.location.search)
 
-    if (name) return urlSearchParams.get(name)
-
-    return Object.fromEntries(urlSearchParams.entries())
+    return this._extractParameters(urlSearchParams, name)
   }
 
   params (name: string = ''): Record<string, string> | string | null {
@@ -69,11 +67,8 @@ export class LitRouter extends LitElement implements Router {
 
     // Extract parameters from the URL using the route's regular expression
     const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
-    const { groups } = pathnameObject || {};
 
-    if (name) return groups[name] || null;
-
-    return groups;
+    return this._extractParameters(pathnameObject, name)
   }
 
   onChange (_callback: (router: LitRouter) => void): Suscription {
@@ -129,34 +124,30 @@ export class LitRouter extends LitElement implements Router {
     if (!route) {
       return console.warn(new Error(`Route with path "${pathname}" not found.`))
     }
+
+    // The qs and params methods are wrapped for beforeEnter protection
+    // to ensure that they return the query and parameters of the path
+    // we want to navigate to, not the current one.
+    const qs = (name?: string) => this._extractParameters(urlInstance.searchParams, name)
+
+    const params = (name?: string) => {
+      const { pathname, origin } = urlInstance
+
+      const route = this._findRouteByPath(pathname)
+
+      if (!route) return {};
+
+      const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
+
+      return this._extractParameters(pathnameObject, name)
+    }
    
-    // We can modify the route before entering it.
     const isAllowed = await route.resolveRecursiveGuard({
       navigate: this.navigate.bind(this),
       forward: this.forward.bind(this),
       back: this.back.bind(this),
-      qs: (name?: string) => {
-        const urlSearchParams = new URLSearchParams(urlInstance.search)
-
-        if (name) return urlSearchParams.get(name)
-
-        return Object.fromEntries(urlSearchParams.entries())
-      },
-      params: (name?: string) => {
-        const { pathname, origin } = urlInstance
-
-        const route = this._findRouteByPath(pathname)
-
-        if (!route) return {};
-
-        // Extract parameters from the URL using the route's regular expression
-        const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
-        const { groups } = pathnameObject || {};
-
-        if (name) return groups[name] || null;
-
-        return groups;
-      }
+      qs,
+      params
     })
 
     if (!isAllowed) return
@@ -261,6 +252,23 @@ export class LitRouter extends LitElement implements Router {
     })
 
     return route
+  }
+
+  private _extractParameters (
+    source: URLSearchParams | RegExpExecArray | null,
+    name?: string
+  ): Record<string, string> | string | null {
+    if (!source) return {};
+  
+    if (name) {
+      return source instanceof URLSearchParams
+        ? source.get(name)
+        : null;
+    }
+  
+    return source instanceof URLSearchParams
+      ? Object.fromEntries(source.entries())
+      : source.groups || {};
   }
 
   /**
