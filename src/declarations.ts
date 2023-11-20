@@ -9,8 +9,6 @@ export type Component =
   HTMLElementConstructor |
   (() => Promise<HTMLElementConstructor>)
 
-export type Guard = (router: Router) => boolean | Promise<boolean>
-
 export interface Router {
   /**
    * List of registered routes.
@@ -21,22 +19,13 @@ export interface Router {
    *
    * @example
    * ```js
-   * // URL: https://example.com?foo=bar
-   * router.queries() // { foo: 'bar' }
+   * // URL: https://example.com?foo=bar&baz=qux
+   * router.qs() // { foo: 'bar', baz: 'qux' }
+   * 
+   * router.qs('foo') // { foo: 'bar' }
    * ```
    */
-  queries (): Record<string, string>;
-  /**
-   * Returns the query parameter with the given name.
-   *
-   * @param name The name of query parameter.
-   * @example
-   * ```js
-   * // URL: https://example.com?foo=bar
-   * router.query('foo') // 'bar'
-   * ```
-   */
-  query (name: string): string | null;
+  qs (name?: string): Record<string, string> | string | null;
   /**
    * Retrieves an object representing the parameters present in the current route.
    * 
@@ -46,18 +35,7 @@ export interface Router {
    * router.params() // { userId: '1' }
    * ```
    */
-  params (): Record<string, string>;
-  /**
-   * Retrieves the value of a specific parameter from the current route.
-   *
-   * @param {string} name - The name of the parameter to retrieve.
-   * @example
-   * ```js
-   * // URL: https://example.com/users/1
-   * router.param('userId') // '1'
-   * ```
-   */
-  param (name: string): string | null;
+  params (name?: string): Record<string, string> | string | null;
   /**
    * Adds a callback function to be invoked when the router state changes.
    * 
@@ -95,6 +73,10 @@ export interface Router {
    */
   back (): void;
 }
+
+export type CustomRouterGuard = Omit<Router, 'onChange' | 'setRoutes' | 'routes'>
+
+export type Guard = (router: CustomRouterGuard) => boolean | Promise<boolean>;
 
 export interface RouteConfig {
   /**

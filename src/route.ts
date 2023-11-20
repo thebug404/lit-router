@@ -1,5 +1,10 @@
-import { Component, Guard, HTMLElementConstructor, RouteConfig } from './declarations.js'
-import { LitRouter } from './router.js'
+import {
+  HTMLElementConstructor,
+  CustomRouterGuard,
+  RouteConfig,
+  Component,
+  Guard
+} from './declarations.js'
 
 export class Route implements RouteConfig {
   readonly path!: string
@@ -53,7 +58,7 @@ export class Route implements RouteConfig {
     return document.createElement(component as string);
   }
 
-  async resolveRecursiveGuard (router: LitRouter): Promise<boolean> {
+  async resolveRecursiveGuard (router: CustomRouterGuard): Promise<boolean> {
     if (!this.beforeEnter.length) {
       return Promise.resolve(true)
     }
@@ -62,7 +67,7 @@ export class Route implements RouteConfig {
     const results = await Promise.all(guards)
 
     const parentGuardResult = this._parent
-      ? await this._parent.resolveRecursiveGuard(router)
+      ? await this._parent.resolveRecursiveGuard(router )
       : true
 
     return results.every((result) => result) && parentGuardResult

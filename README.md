@@ -24,13 +24,11 @@
   - [API](#api)
     - [`.routes()`](#routes)
     - [`.setRoutes(routes: Partial<RouteConfig>[])`](#setroutesroutes-partialrouteconfig)
-    - [`.navigate(options: Partial<Navigation>)`](#navigateoptions-partialnavigation)
+    - [`.navigate(navigation: Partial<Navigation>, options?: Partial<NavigationOptions>)`](#navigatenavigation-partialnavigation-options-partialnavigationoptions)
     - [`.forward()`](#forward)
     - [`.back()`](#back)
-    - [`.queries()`](#queries)
-    - [`.query(key: string)`](#querykey-string)
-    - [`.params()`](#params)
-    - [`.param(key: string)`](#paramkey-string)
+    - [`.qs(name?: string)`](#qsname-string)
+    - [`.params(name?: string)`](#paramsname-string)
   - [Interfaces](#interfaces)
     - [`Component`](#component)
     - [`RouteConfig`](#routeconfig)
@@ -232,16 +230,16 @@ back()
 import { router } from './index.js'
 
 // Get all queries. Example: /users?name=Ivan&age=23
-router.queries() // { name: 'Ivan', age: '23' }
+router.qs() // { name: 'Ivan', age: '23' }
 
 // Get a specific query. Example: /users?name=Ivan&age=23
-router.query('name') // Ivan
+router.qs('name') // Ivan
 
 // Get all params. Example: /users/1
 router.params() // { id: '1' }
 
 // Get a specific param. Example: /users/1
-router.param('id') // 1
+router.params('id') // 1
 ```
 
 ## Guards
@@ -270,6 +268,20 @@ const routes: Route[] = [
 ]
 ```
 
+Or you can use destructuring to get the router. Here's an example:
+
+```ts
+const isAdminGuard = ({ navigate }) => {
+  const user = localStorage.getItem('user')
+
+  if (user && user.role === 'admin') return true
+
+  navigate({ path: '/login' })
+
+  return false
+}
+```
+
 ## API
 
 Below is a list of all the methods available on the `Lit Router` API.
@@ -282,7 +294,7 @@ Returns the list of routes.
 
 Method responsible for setting application routes. It receives an array of type [RouteConfig](#routeconfig) as a parameter.
 
-### `.navigate(options: Partial<Navigation>)`
+### `.navigate(navigation: Partial<Navigation>, options?: Partial<NavigationOptions>)`
 
 Method responsible for navigating to a specific route. It receives an object of type [Navigation](#navigation) as a parameter.
 
@@ -294,21 +306,13 @@ Method responsible for navigating forward.
 
 Method responsible for navigating back.
 
-### `.queries()`
+### `.qs(name?: string)`
 
-Method responsible for returning all queries.
+Method responsible for returning all queries or a specific query.
 
-### `.query(key: string)`
+### `.params(name?: string)`
 
-Method responsible for returning a specific query.
-
-### `.params()`
-
-Method responsible for returning all params.
-
-### `.param(key: string)`
-
-Method responsible for returning a specific param.
+Method responsible for returning all params or a specific param.
 
 ## Interfaces
 

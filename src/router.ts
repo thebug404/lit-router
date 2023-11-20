@@ -52,19 +52,15 @@ export class LitRouter extends LitElement implements Router {
     return this._routes
   }
 
-  queries (): Record<string, string> {
+  qs (name: string = ''): Record<string, string> | string | null {
     const urlSearchParams = new URLSearchParams(window.location.search)
+
+    if (name) return urlSearchParams.get(name)
 
     return Object.fromEntries(urlSearchParams.entries())
   }
 
-  query (name: string): string | null {
-    const queries = this.queries()
-
-    return queries[name] || null
-  }
-
-  params (): Record<string, string> {
+  params (name: string = ''): Record<string, string> | string | null {
     const { pathname, href } = window.location;
 
     const route = this._findRouteByPath(pathname);
@@ -75,13 +71,9 @@ export class LitRouter extends LitElement implements Router {
     const { pathname: pathnameObject } = route.urlPattern.exec(href) || {};
     const { groups } = pathnameObject || {};
 
-    return groups || {};
-  }
+    if (name) return groups[name] || null;
 
-  param (name: string): string | null  {
-    const params = this.params();
-
-    return params[name] || null;
+    return groups;
   }
 
   onChange (_callback: (router: LitRouter) => void): Suscription {
@@ -137,8 +129,35 @@ export class LitRouter extends LitElement implements Router {
     if (!route) {
       return console.warn(new Error(`Route with path "${pathname}" not found.`))
     }
+   
+    // We can modify the route before entering it.
+    const isAllowed = await route.resolveRecursiveGuard({
+      navigate: this.navigate.bind(this),
+      forward: this.forward.bind(this),
+      back: this.back.bind(this),
+      qs: (name?: string) => {
+        const urlSearchParams = new URLSearchParams(urlInstance.search)
 
-    const isAllowed = await route.resolveRecursiveGuard(this)
+        if (name) return urlSearchParams.get(name)
+
+        return Object.fromEntries(urlSearchParams.entries())
+      },
+      params: (name?: string) => {
+        const { pathname, href } = urlInstance
+
+        const route = this._findRouteByPath(pathname)
+
+        if (!route) return {};
+
+        // Extract parameters from the URL using the route's regular expression
+        const { pathname: pathnameObject } = route.urlPattern.exec(href) || {};
+        const { groups } = pathnameObject || {};
+
+        if (name) return groups[name] || null;
+
+        return groups;
+      }
+    })
 
     if (!isAllowed) return
 
