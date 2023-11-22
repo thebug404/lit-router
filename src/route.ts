@@ -45,17 +45,20 @@ export class Route implements RouteConfig {
    * @param component The component to resolve.
    */
   private async _resolveComponent (component: Component): Promise<unknown> {
-    if (typeof component === 'function') {
-      if (component.prototype instanceof HTMLElement) {
-        return new (component as HTMLElementConstructor)();
-      }
-
-      const Module = await (component as () => Promise<HTMLElementConstructor>)();
-
-      return new Module()
+    // Resolve the tag name of the component.
+    if (typeof component === 'string') {
+      return document.createElement(component);
     }
-  
-    return document.createElement(component as string);
+
+    // Resolve a custom element.
+    if (typeof component === 'function' && component.prototype instanceof HTMLElement) {
+      return new (component as HTMLElementConstructor)();
+    }
+
+    // Resolve a lazy-loaded module.
+    const Module = await (component as () => Promise<HTMLElementConstructor>)();
+
+    return new Module()
   }
 
   async resolveRecursiveGuard (router: CustomRouterGuard): Promise<boolean> {
