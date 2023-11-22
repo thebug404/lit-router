@@ -1,4 +1,5 @@
-import { Navigation, TAG_NAME_ROUTER } from './declarations';
+import { Navigation, TAG_NAME_ROUTER } from './declarations.js';
+import { RouterNotFoundError } from './errors.js';
 
 /**
  * Navigates to a new route based on the provided navigation options.
@@ -9,7 +10,7 @@ export const navigate = (navigation: Partial<Navigation>) => {
   const router = document.querySelector(TAG_NAME_ROUTER)
 
   if (!router) {
-    throw new Error('No router found')
+    throw new RouterNotFoundError()
   }
 
   router.navigate(navigation)

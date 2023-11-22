@@ -46,7 +46,7 @@
 - [x] Route guards
 - [x] Prevent add element in the history when execute beforeEnter.
 - [x] Change the method os navigation.
-- [ ] Create a domain errors.
+- [x] Create a domain errors.
 - [ ] Add tests.
 
 ## Installation

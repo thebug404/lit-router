@@ -11,6 +11,13 @@ import {
   Router
 } from './declarations.js'
 
+import {
+  RouteAlreadyExistsError,
+  MissingComponentError,
+  RouteNotFoundError,
+  MissingPathError
+} from './errors.js'
+
 import { Route } from './route.js'
 
 declare global {
@@ -108,7 +115,7 @@ export class LitRouter extends LitElement implements Router {
     const { path, href } = navigation
 
     if (!path && !href) {
-      return console.error(new Error('Missing path.'));
+      return console.error(new MissingPathError());
     }
 
     const urlInstance = new URL(path || href || '', window.location.origin)
@@ -122,7 +129,7 @@ export class LitRouter extends LitElement implements Router {
     const route = this._findRouteByPath(pathname)
 
     if (!route) {
-      return console.warn(new Error(`Route with path "${pathname}" not found.`))
+      return console.warn(new RouteNotFoundError(pathname))
     }
 
     // The qs and params methods are wrapped for beforeEnter protection
@@ -208,11 +215,11 @@ export class LitRouter extends LitElement implements Router {
     const { path, component } = routeConfig
 
     if (!path) {
-      throw new Error('Missing path.')
+      throw new MissingPathError()
     }
 
     if (!component) {
-      throw new Error('Missing component.')
+      throw new MissingComponentError()
     }
 
     const route = new Route(path, component)
@@ -243,9 +250,7 @@ export class LitRouter extends LitElement implements Router {
       childRoute.setParent(route)
 
       if (this._findRouteByPath(child.path, route.children || [])) {
-        return console.error(
-          new Error(`${child.path} children route has already been declared`)
-        )
+        return console.error(new RouteAlreadyExistsError(child.path))
       }
 
       route.children.push(childRoute)
