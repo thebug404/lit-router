@@ -6,8 +6,7 @@ import {
   NavigationOptions,
   TAG_NAME_ROUTER,
   Suscription,
-  Navigation,
-  Router
+  Navigation
 } from './declarations.js'
 
 import {
@@ -25,8 +24,10 @@ declare global {
   }
 }
 
+export type BaseRouter = Pick<LitRouter, 'routes' | 'qs' | 'params' | 'onChange' | 'setRoutes' | 'navigate' | 'forward' | 'back'>
+
 @customElement(TAG_NAME_ROUTER)
-export class LitRouter extends LitElement implements Router {
+export class LitRouter extends LitElement {
   @state()
   private _currentRoute: Route | null = null
 
@@ -54,16 +55,39 @@ export class LitRouter extends LitElement implements Router {
     window.removeEventListener('click', this._onHandleAnchorClick.bind(this))
   }
 
+  /**
+   * List of registered routes.
+   */
   routes (): Route[] {
     return this._routes
   }
 
+  /**
+   * Get an object containing the query parameters of the current URL.
+   *
+   * @example
+   * ```js
+   * // URL: https://example.com?foo=bar&baz=qux
+   * router.qs() // { foo: 'bar', baz: 'qux' }
+   * 
+   * router.qs('foo') // { foo: 'bar' }
+   * ```
+   */
   qs (name: string = ''): Record<string, string> | string | null {
     const urlSearchParams = new URLSearchParams(window.location.search)
 
     return this._extractParameters(urlSearchParams, name)
   }
 
+  /**
+   * Retrieves an object representing the parameters present in the current route.
+   * 
+   * @example
+   * ```js
+   * // URL: https://example.com/users/1
+   * router.params() // { userId: '1' }
+   * ```
+   */
   params (name: string = ''): Record<string, string> | string | null {
     const { origin, pathname } = window.location;
 
@@ -77,6 +101,20 @@ export class LitRouter extends LitElement implements Router {
     return this._extractParameters(pathnameObject, name)
   }
 
+  /**
+   * Adds a callback function to be invoked when the router state changes.
+   * 
+   * @param _callback The callback function to be invoked.
+   * @returns {Suscription} Returns a suscription object that can be used to unsubscribe the callback.
+   * @example
+   * ```js
+   * const suscription = router.onChange((router) => {
+   *   console.log(router)
+   * })
+   * 
+   * suscription.unsubscribe()
+   * ```
+   */
   onChange (_callback: (router: LitRouter) => void): Suscription {
     const callback = () => _callback(this)
 
@@ -89,6 +127,11 @@ export class LitRouter extends LitElement implements Router {
     return subscription
   }
 
+  /**
+   * Adds a list of routes to the router configuration.
+   *
+   * @param routes A list of routes.
+   */
   setRoutes (routes: Partial<RouteConfig>[]): void {
     for (const route of routes) {
       const _route = this._buildNestedRouteFromConfig(route)
@@ -105,6 +148,12 @@ export class LitRouter extends LitElement implements Router {
     this.navigate({ href })
   }
 
+  /**
+   * Navigates to a new route based on the provided navigation options.
+   *
+   * @param {Partial<Navigation>} navigation The navigation options, which can include 'name' or 'path'.
+   * @param {Partial<NavigationOptions>} options The navigation options.
+   */
   async navigate (navigation: Partial<Navigation>, options: Partial<NavigationOptions> = {}): Promise<void> {
     const { enableHistoryPushState } = Object.assign(
       { enableHistoryPushState: true },
@@ -165,10 +214,16 @@ export class LitRouter extends LitElement implements Router {
     window.history.pushState({}, '', urlInstance.href)
   }
 
+  /**
+   * Navigates to the next page in session history.
+   */
   forward (): void {
     window.history.forward()
   }
 
+  /**
+   * Navigates to the previous page in session history.
+   */
   back (): void {
     window.history.back()
   }
