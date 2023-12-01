@@ -131,6 +131,15 @@ export class LitRouter extends LitElement {
    * Adds a list of routes to the router configuration.
    *
    * @param routes A list of routes.
+   * @example
+   * ```js
+   * const routes = [
+   *   { path: '/', component: HomePage },
+   *   { path: '/about', component: AboutPage }
+   * ]
+   * 
+   * router.setRoutes(routes)
+   * ```
    */
   setRoutes (routes: Partial<RouteConfig>[]): void {
     for (const route of routes) {
@@ -153,6 +162,14 @@ export class LitRouter extends LitElement {
    *
    * @param {Partial<Navigation>} navigation The navigation options, which can include 'name' or 'path'.
    * @param {Partial<NavigationOptions>} options The navigation options.
+   * @example
+   * ```js
+   * // Navigate to a route by path
+   * router.navigate({ path: '/about' })
+   * 
+   * // Navigate to a route include query parameters
+   * router.navigate({ path: '/users', query: { page: 1 } })
+   * ```
    */
   async navigate (navigation: Partial<Navigation>, options: Partial<NavigationOptions> = {}): Promise<void> {
     const { enableHistoryPushState } = Object.assign(
@@ -216,6 +233,12 @@ export class LitRouter extends LitElement {
 
   /**
    * Navigates to the next page in session history.
+   *
+   * @example
+   * ```js
+   * // Navigate to the next page
+   * router.forward()
+   * ```
    */
   forward (): void {
     window.history.forward()
@@ -223,6 +246,12 @@ export class LitRouter extends LitElement {
 
   /**
    * Navigates to the previous page in session history.
+   *
+   * @example
+   * ```js
+   * // Navigate to the previous page
+   * router.back()
+   * ```
    */
   back (): void {
     window.history.back()
