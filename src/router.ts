@@ -5,7 +5,6 @@ import { Task } from '@lit/task'
 import {
   NavigationOptions,
   TAG_NAME_ROUTER,
-  RouteConfig,
   Suscription,
   Navigation,
   Router
@@ -18,7 +17,7 @@ import {
   MissingPathError
 } from './errors.js'
 
-import { Route } from './route.js'
+import { Route, RouteConfig } from './route.js'
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -199,7 +198,7 @@ export class LitRouter extends LitElement implements Router {
 
       if (!onlyLeafRoute && route.match(path)) return route
 
-      const childRoute = findInChildRoutes(path, route.children)
+      const childRoute = findInChildRoutes(path, route.children as Route[])
 
       if (childRoute) return childRoute
     }
@@ -249,8 +248,8 @@ export class LitRouter extends LitElement implements Router {
 
       childRoute.setParent(route)
 
-      if (this._findRouteByPath(child.path, route.children || [])) {
-        return console.error(new RouteAlreadyExistsError(child.path))
+      if (this._findRouteByPath(child.path as string, (route.children || []) as Route[])) {
+        return console.error(new RouteAlreadyExistsError(child.path as string))
       }
 
       route.children.push(childRoute)

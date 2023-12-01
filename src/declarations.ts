@@ -1,4 +1,4 @@
-import { Route } from './route.js'
+import { Route, RouteConfig } from './route.js'
 
 export const TAG_NAME_ROUTER = 'lit-router' as const
 
@@ -77,70 +77,6 @@ export interface Router {
 export type CustomRouterGuard = Omit<Router, 'onChange' | 'setRoutes' | 'routes'>
 
 export type Guard = (router: CustomRouterGuard) => boolean | Promise<boolean>;
-
-export interface RouteConfig {
-  /**
-   * The path of route.
-   */
-  path: string;
-  /**
-   * The component of route.
-   * 
-   * @example
-   * ```ts
-   * // String
-   * { path: '/foo', component: 'foo-component' }
-   * 
-   * // HTMLElement
-   * import { FooComponent } from './foo-component.js'
-   * 
-   * { path: '/foo', component: FooComponent }
-   * 
-   * // Lazy loading
-   * {
-   *   path: '/foo',
-   *   component: () => import('./foo-component.js').then((m) => m.FooComponent)
-   * }
-   * ```
-   */
-  component: Component;
-  /**
-   * The children of route.
-   * 
-   * @example
-   * ```ts
-   * const routeConfig: RouteConfig = {
-   *   path: '/foo',
-   *   component: 'foo-component',
-   *   children: [
-   *     {
-   *       path: '/bar',
-   *       component: 'bar-component'
-   *     }
-   *   ]
-   * }
-   * ```
-   */
-  children?: RouteConfig[];
-  /**
-   * Callback executed before the route is entered.
-   * 
-   * @example
-   * ```ts
-   * const routeConfig: RouteConfig = {
-   *   path: '/foo',
-   *   component: 'foo-component',
-   *   beforeEnter: [
-   *     () => {
-   *       // Do something...
-   *       return true
-   *     }
-   *   ]
-   * }
-   * ```
-   */
-  beforeEnter?: Guard[];
-}
 
 export interface Suscription {
   /**

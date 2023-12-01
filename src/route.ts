@@ -1,18 +1,76 @@
 import {
   HTMLElementConstructor,
   CustomRouterGuard,
-  RouteConfig,
   Component,
   Guard
 } from './declarations.js'
 
-export class Route implements RouteConfig {
+export type RouteConfig = Pick<Route, 'path' | 'component' | 'children' | 'beforeEnter'>
+
+export class Route {
+  /**
+   * The path of route.
+   */
   readonly path!: string
 
+  /**
+   * The component of route.
+   * 
+   * @example
+   * ```ts
+   * // String
+   * { path: '/foo', component: 'foo-component' }
+   * 
+   * // HTMLElement
+   * import { FooComponent } from './foo-component.js'
+   * 
+   * { path: '/foo', component: FooComponent }
+   * 
+   * // Lazy loading
+   * {
+   *   path: '/foo',
+   *   component: () => import('./foo-component.js').then((m) => m.FooComponent)
+   * }
+   * ```
+   */
   readonly component!: Component
 
-  children: (RouteConfig & Route)[] = []
+  /**
+   * The children of route.
+   * 
+   * @example
+   * ```ts
+   * const routeConfig: RouteConfig = {
+   *   path: '/foo',
+   *   component: 'foo-component',
+   *   children: [
+   *     {
+   *       path: '/bar',
+   *       component: 'bar-component'
+   *     }
+   *   ]
+   * }
+   * ```
+   */
+  children: Partial<RouteConfig>[] = []
 
+  /**
+   * Callback executed before the route is entered.
+   * 
+   * @example
+   * ```ts
+   * const routeConfig: RouteConfig = {
+   *   path: '/foo',
+   *   component: 'foo-component',
+   *   beforeEnter: [
+   *     () => {
+   *       // Do something...
+   *       return true
+   *     }
+   *   ]
+   * }
+   * ```
+   */
   beforeEnter: Guard[] = []
 
   private _parent: Route | null = null
