@@ -1,3 +1,5 @@
+/// <reference types="urlpattern-polyfill" />
+
 import {
   HTMLElementConstructor,
   CustomRouterGuard,

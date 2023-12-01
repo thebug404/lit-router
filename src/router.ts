@@ -1,3 +1,5 @@
+/// <reference types="urlpattern-polyfill" />
+
 import { customElement, state } from 'lit/decorators.js'
 import { LitElement } from 'lit'
 import { Task } from '@lit/task'
@@ -98,7 +100,7 @@ export class LitRouter extends LitElement {
     // Extract parameters from the URL using the route's regular expression
     const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
 
-    return this._extractParameters(pathnameObject, name)
+    return this._extractParameters(pathnameObject as any, name)
   }
 
   /**
@@ -211,7 +213,7 @@ export class LitRouter extends LitElement {
 
       const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
 
-      return this._extractParameters(pathnameObject, name)
+      return this._extractParameters(pathnameObject as any, name)
     }
    
     const isAllowed = await route.resolveRecursiveGuard({
@@ -343,7 +345,7 @@ export class LitRouter extends LitElement {
   }
 
   private _extractParameters (
-    source: URLSearchParams | RegExpExecArray | null,
+    source: URLSearchParams | RegExpExecArray | null | undefined,
     name?: string
   ): Record<string, string> | string | null {
     if (!source) return {};
