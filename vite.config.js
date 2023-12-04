@@ -25,6 +25,8 @@ export default defineConfig({
     },
   },
   plugins: [
-    dtsPlugin()
+    dtsPlugin({
+      entryRoot: resolve(__dirname, 'src'),
+    })
   ]
 })
