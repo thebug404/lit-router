@@ -19,6 +19,7 @@ import {
 } from './errors.js'
 
 import { Route, RouteConfig } from './route.js'
+import { back, forward } from './utilities.js'
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -243,7 +244,7 @@ export class LitRouter extends LitElement {
    * ```
    */
   forward (): void {
-    window.history.forward()
+    forward()
   }
 
   /**
@@ -256,7 +257,7 @@ export class LitRouter extends LitElement {
    * ```
    */
   back (): void {
-    window.history.back()
+    back()
   }
 
   /**
