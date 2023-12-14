@@ -28,5 +28,8 @@ export default defineConfig({
     dtsPlugin({
       entryRoot: resolve(__dirname, 'src'),
     })
-  ]
+  ],
+  test: {
+    environment: 'jsdom'
+  }
 })
