@@ -8,10 +8,12 @@ import '../src/router.js'
 
 import { AboutPage } from './pages/about-page.js'
 import { HomePage } from './pages/home-page.js'
+import './pages/notfound-page.js'
 
 const routes: Partial<RouteConfig>[] = [
   { path: '/', component: HomePage },
-  { path: '/about', component: AboutPage }
+  { path: '/about', component: AboutPage },
+  { path: '*', component: 'notfound-page' }
 ]
 
 const _delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -27,7 +29,7 @@ beforeAll(async () => {
 
   document.body.appendChild($router)
 
-  await _delay(100)
+  await _delay(50)
 })
 
 afterAll(() => {
@@ -50,7 +52,7 @@ describe('router', () => {
 
     $router.navigate({ path: '/about' })
 
-    await _delay(100)
+    await _delay(50)
 
     const $aboutPage = $router.querySelector('about-page')
 
@@ -62,7 +64,7 @@ describe('router', () => {
 
     $router.back()
 
-    await _delay(100)
+    await _delay(50)
 
     const $homePage = $router.querySelector('home-page')
 
@@ -74,10 +76,22 @@ describe('router', () => {
 
     $router.forward()
 
-    await _delay(100)
+    await _delay(50)
 
     const $aboutPage = $router.querySelector('about-page')
 
     expect(_stripExpressionComments($aboutPage!.shadowRoot!.innerHTML)).toBe('<h1>About Page</h1>')
+  })
+
+  it('Check that the renderes component is notfound-page', async () => {
+    const $router = document.querySelector('lit-router') as LitRouter
+
+    $router.navigate({ path: '/random' })
+
+    await _delay(50)
+
+    const $notFoundPage = $router.querySelector('notfound-page')
+
+    expect(_stripExpressionComments($notFoundPage!.shadowRoot!.innerHTML)).toBe('<h1>404 | Not Found</h1>')
   })
 })
