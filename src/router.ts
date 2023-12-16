@@ -91,7 +91,7 @@ export class LitRouter extends LitElement {
    * router.params() // { userId: '1' }
    * ```
    */
-  params (name: string = ''): Record<string, string> | string | null {
+  params (name?: string): Record<string, string | undefined> | string | undefined {
     const { origin, pathname } = window.location;
 
     const route = this._findRouteByPath(pathname);
@@ -101,7 +101,13 @@ export class LitRouter extends LitElement {
     // Extract parameters from the URL using the route's regular expression
     const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
 
-    return this._extractParameters(pathnameObject as any, name)
+    if (!pathnameObject || !pathnameObject.groups) {
+      return {}
+    }
+
+    return name == null
+      ? pathnameObject.groups
+      : pathnameObject.groups[name];
   }
 
   /**
@@ -214,7 +220,13 @@ export class LitRouter extends LitElement {
 
       const { pathname: pathnameObject } = route.urlPattern.exec(origin + pathname) || {};
 
-      return this._extractParameters(pathnameObject as any, name)
+      if (!pathnameObject || !pathnameObject.groups) {
+        return {}
+      }
+
+      return name == null
+        ? pathnameObject.groups
+        : pathnameObject.groups[name];
     }
    
     const isAllowed = await route.resolveRecursiveGuard({
