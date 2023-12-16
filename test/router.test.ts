@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import 'urlpattern-polyfill'
 
@@ -8,19 +8,48 @@ import '../src/router.js'
 
 import { AboutPage } from './pages/about-page.js'
 import { HomePage } from './pages/home-page.js'
-import './pages/notfound-page.js'
+
+import {
+  _stripExpressionComments,
+  _hasFibonacciNumber,
+  _delay
+} from './utils.js'
 
 const routes: Partial<RouteConfig>[] = [
   { path: '/', component: HomePage },
   { path: '/about', component: AboutPage },
-  { path: '*', component: 'notfound-page' }
+  {
+    path: '/dashboard',
+    component: () => import('./pages/dashboard/dashboard-page.js').then((m) => m.DashboardPage),
+    beforeEnter: [
+      ({ navigate, qs }) => {
+        const token = qs('token')
+
+        if (token) return true
+
+        navigate({ path: '/' })
+        return false
+      }
+    ],
+    children: [
+      {
+        path: '/users/:id',
+        component: () => import('./pages/dashboard/users-page.js').then((m) => m.UsersPage),
+        beforeEnter: [
+          ({ params }) => {
+            const userId = Number(params('id'))
+
+            return _hasFibonacciNumber(userId)
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '*',
+    component: () => import('./pages/notfound-page.js').then((m) => m.NotFoundPage)
+  }
 ]
-
-const _delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-const _stripExpressionComments = (html: string) => {
-  return html.replace(/<!--\?lit\$[0-9]+\$-->|<!--\??-->/g, '');
-}
 
 beforeAll(async () => {
   const $router = document.createElement('lit-router')
@@ -93,5 +122,66 @@ describe('router', () => {
     const $notFoundPage = $router.querySelector('notfound-page')
 
     expect(_stripExpressionComments($notFoundPage!.shadowRoot!.innerHTML)).toBe('<h1>404 | Not Found</h1>')
+  })
+
+  it('Check that the renderes component is not dashboard-page', async () => {
+    const $router = document.querySelector('lit-router') as LitRouter
+
+    $router.navigate({ path: '/dashboard' })
+
+    await _delay(50)
+
+    const $dashboardPage = $router.querySelector('dashboard-page')
+    expect($dashboardPage).toBeNull()
+
+    const $homePage = $router.querySelector('home-page')
+    expect(_stripExpressionComments($homePage!.shadowRoot!.innerHTML)).toBe('<h1>Home Page</h1>')
+  })
+
+  it('Check that the renderes component is dashboard-page', async () => {
+    const $router = document.querySelector('lit-router') as LitRouter
+
+    $router.navigate({
+      path: '/dashboard',
+      query: { token: '123' }
+    })
+
+    await _delay(50)
+
+    const $dashboardPage = $router.querySelector('dashboard-page')
+
+    expect(_stripExpressionComments($dashboardPage!.shadowRoot!.innerHTML)).toMatch(/Dashboard Page/)
+  })
+
+  it('Check that the renderes component is not users-page', async () => {
+    const $router = document.querySelector('lit-router') as LitRouter
+
+    $router.navigate({
+      path: '/dashboard/users/4',
+      query: { token: '123' }
+    })
+
+    await _delay(50)
+
+    const $usersPage = $router.querySelector('users-page')
+    expect($usersPage).toBeNull()
+
+    const $dashboardPage = $router.querySelector('dashboard-page')
+    expect(_stripExpressionComments($dashboardPage!.shadowRoot!.innerHTML)).toMatch(/Dashboard Page/)
+  })
+
+  it('Check that the renderes component is users-page', async () => {
+    const $router = document.querySelector('lit-router') as LitRouter
+
+    $router.navigate({
+      path: '/dashboard/users/1',
+      query: { token: '123' }
+    })
+
+    await _delay(50)
+
+    const $usersPage = $router.querySelector('users-page')
+
+    expect(_stripExpressionComments($usersPage!.shadowRoot!.innerHTML)).toBe('<h1>Users Page 1</h1>')
   })
 })
