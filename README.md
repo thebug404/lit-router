@@ -7,6 +7,7 @@
 - [lit-labs/router](#lit-labsrouter)
   - [Table of Contents](#table-of-contents)
   - [Roadmap](#roadmap)
+  - [Setup](#setup)
   - [Installation](#installation)
   - [Usage](#usage)
   - [Defining routes](#defining-routes)
@@ -29,10 +30,6 @@
     - [`.back()`](#back)
     - [`.qs(name?: string)`](#qsname-string)
     - [`.params(name?: string)`](#paramsname-string)
-  - [Interfaces](#interfaces)
-    - [`Component`](#component)
-    - [`RouteConfig`](#routeconfig)
-    - [`Navigation`](#navigation)
 
 ## Roadmap
 
@@ -47,6 +44,22 @@
 - [x] Create a domain errors.
 - [x] Add tests.
 - [ ] Demo.
+
+## Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Run build
+npm run build
+
+# Run tests
+npm run test
+
+# Run dev server
+npm run dev
+```
 
 ## Installation
 
@@ -312,38 +325,3 @@ Method responsible for returning all queries or a specific query.
 ### `.params(name?: string)`
 
 Method responsible for returning all params or a specific param.
-
-## Interfaces
-
-Below is a list of all the interfaces available on the `Lit Router` API.
-
-### `Component`
-
-```ts
-export type HTMLElementConstructor = typeof HTMLElement
-
-export type Component =
-  string |
-  HTMLElementConstructor |
-  (() => Promise<HTMLElementConstructor>)
-```
-
-### `RouteConfig`
-
-```ts
-interface RouteConfig {
-  path: string;
-  component: Component;
-  children?: RouteConfig[];
-}
-```
-
-### `Navigation`
-
-```ts
-interface Navigation {
-  path: string;
-  href: string;
-  query: Record<string, string>;
-}
-```
