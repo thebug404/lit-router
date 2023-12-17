@@ -183,3 +183,59 @@ it('Check that forward() navigation function', async () => {
 
   expect(_stripExpressionComments($usersPage!.shadowRoot!.innerHTML)).toBe('<h1>Users Page 1</h1>')
 })
+
+it('Check that qs() function', async () => {
+  const $router = document.querySelector(TAG_NAME_ROUTER) as LitRouter
+
+  $router.navigate({
+    path: '/dashboard/users/8',
+    query: {
+      token: '123',
+      name: 'Ivan Guevara',
+      country: 'El Salvador',
+      age: '23'
+    }
+  })
+
+  await _delay(100)
+
+  const queriesObject = $router.qs()
+
+  expect(queriesObject).toEqual({
+    token: '123',
+    name: 'Ivan Guevara',
+    country: 'El Salvador',
+    age: '23'
+  })
+
+  const token = $router.qs('token')
+  const name = $router.qs('name')
+  const country = $router.qs('country')
+
+  expect(token).toBe('123')
+  expect(name).toBe('Ivan Guevara')
+  expect(country).toBe('El Salvador')
+})
+
+it('Check that params() function', async () => {
+  const $router = document.querySelector(TAG_NAME_ROUTER) as LitRouter
+
+  $router.navigate({
+    path: '/dashboard/users/13',
+    query: { token: '123' }
+  })
+
+  await _delay(50)
+
+  const paramsObject = $router.params()
+  expect(paramsObject).toEqual({ id: '13' })
+
+  const id = $router.params('id')
+  expect(id).toBe('13')
+})
+
+it('Check that routes() function', async () => {
+  const $router = document.querySelector(TAG_NAME_ROUTER) as LitRouter
+
+  expect($router.routes()).toHaveLength(4)
+})
