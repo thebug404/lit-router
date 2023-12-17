@@ -41,13 +41,12 @@
 - [x] Nested routing
 - [x] Lazy loading
 - [x] Route params & query
-- [x] Remove the inherence of interface Navigation of URL.
 - [x] Validate the 404 page.
 - [x] Route guards
-- [x] Prevent add element in the history when execute beforeEnter.
-- [x] Change the method os navigation.
+- [x] Prevent add element in the history when execute `beforeEnter`.
 - [x] Create a domain errors.
-- [ ] Add tests.
+- [x] Add tests.
+- [ ] Demo.
 
 ## Installation
 

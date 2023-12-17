@@ -239,3 +239,69 @@ it('Check that routes() function', async () => {
 
   expect($router.routes()).toHaveLength(4)
 })
+
+it('Check that navigation using anchor tag', async () => {
+  const $router = document.querySelector(TAG_NAME_ROUTER) as LitRouter
+
+  const $anchor = document.createElement('a')
+  $anchor.setAttribute('href', '/about')
+  $anchor.textContent = 'About'
+
+  document.body.appendChild($anchor)
+
+  $anchor.click()
+
+  await _delay(50)
+
+  const $aboutPage = $router.querySelector('about-page')
+  expect(_stripExpressionComments($aboutPage!.shadowRoot!.innerHTML)).toBe('<h1>About Page</h1>')
+
+  document.body.removeChild($anchor)
+
+  // Check that the anchor is downloaded
+  const $anchorDownloaded = document.createElement('a')
+  $anchorDownloaded.setAttribute('href', '/about')
+  $anchorDownloaded.textContent = 'About'
+
+  document.body.appendChild($anchorDownloaded)
+
+  $anchorDownloaded.click()
+
+  await _delay(50)
+
+  const $aboutPage2 = $router.querySelector('about-page')
+  expect(_stripExpressionComments($aboutPage2!.shadowRoot!.innerHTML)).toBe('<h1>About Page</h1>')
+
+  document.body.removeChild($anchorDownloaded)
+
+  // Check that the anchor is rel="external"
+  const $anchorExternal = document.createElement('a')
+  $anchorExternal.setAttribute('href', '/about')
+  $anchorExternal.setAttribute('rel', 'external')
+
+  document.body.appendChild($anchorExternal)
+
+  $anchorExternal.click()
+
+  await _delay(50)
+
+  const $aboutPage3 = $router.querySelector('about-page')
+  expect(_stripExpressionComments($aboutPage3!.shadowRoot!.innerHTML)).toBe('<h1>About Page</h1>')
+
+  document.body.removeChild($anchorExternal)
+
+  // Check that the anchor is mailto:
+  // const $anchorMailto = document.createElement('a')
+  // $anchorMailto.setAttribute('href', 'mailto:abc@domain.com')
+
+  // document.body.appendChild($anchorMailto)
+
+  // $anchorMailto.click()
+
+  // await _delay(50)
+
+  // const $aboutPage4 = $router.querySelector('about-page')
+  // expect(_stripExpressionComments($aboutPage4!.shadowRoot!.innerHTML)).toBe('<h1>About Page</h1>')
+
+  // document.body.removeChild($anchorMailto)
+})
