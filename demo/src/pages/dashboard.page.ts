@@ -31,7 +31,7 @@ export class DashboardPage extends LitElement {
 
           <div class="navbar__menu">
             <a href="/dashboard">Dashboard</a>
-            <a href="/about">About</a>
+            <a href="/dashboard/users">Users</a>
           </div>
 
           <span class="spacer"></span>
