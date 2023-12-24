@@ -1,3 +1,3 @@
 export const environments = {
-  BASE_URL_API: 'https://jsonplaceholder.typicode.com'
+  BASE_URL_API: 'http://localhost:3000'
 }

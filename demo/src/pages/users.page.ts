@@ -14,15 +14,15 @@ declare global {
 }
 
 interface User {
-  id: number;
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-  avatar: string;
-  creationAt: Date;
-  updatedAt: Date;
+  id:        number;
+  firstName: string;
+  lastName:  string;
+  phone:     number;
+  email:     string;
+  NIT:       string;
+  avatar:    string;
 }
+
 
 
 @customElement("users-page")
@@ -38,7 +38,7 @@ export class UsersPage extends LitElement {
   }
 
   private async _fetchUsers (): Promise<void> {
-    const res = await fetch(`${BASE_URL_API}/users`)
+    const res = await fetch(`${BASE_URL_API}/clients`)
 
     const users = await res.json()
 
@@ -46,32 +46,37 @@ export class UsersPage extends LitElement {
   }
 
   private _generateAvatar (name: string): string {
-    return `https://ui-avatars.com/api/?rounded=true&name=${name}&background=random&size=80`
+    return `https://ui-avatars.com/api/?rounded=true&name=${name}&background=random&size=30`
   }
 
   protected render (): unknown {
     return html`
       <main>
-        <ul class="users">
-          ${this._users.map((user) => html`
-            <li class="user">
-              <hwc-card>
-                <div class="user">
-                  <img
-                    src="${this._generateAvatar(user.name)}"
-                    class="user__image"
-                    alt="${user.name}"
-                  >
-
-                  <div class="user__description">
-                    <h2>${user.name}</h2>
-                    <p>${user.email}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Fullname</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${this._users.map(user => html`
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center;">
+                    <span>
+                      <img src="${this._generateAvatar(`${user.firstName} ${user.lastName}`)}" alt="${user.firstName} ${user.lastName}">
+                    </span>
+                    <span style="margin-left: 10px;">${user.firstName} ${user.lastName}</span>
                   </div>
-                </div>
-              </hwc-card>
-            </li>
-          `)}
-        </ul>
+                </td>
+                <td>${user.email}</td>
+                <td>${user.phone}</td>
+              </tr>
+            `)}
+          </tbody>
+        </table>
       </main>
     `;
   }

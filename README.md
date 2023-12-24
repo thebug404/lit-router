@@ -58,7 +58,7 @@ npm run build
 npm run test
 
 # Run dev server
-npm run dev
+npm run dev && npx json-server --watch db.json
 ```
 
 ## Installation

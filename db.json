@@ -1,0 +1,326 @@
+{
+  "clients": [
+    {
+      "id": 1,
+      "firstName": "Matthew",
+      "lastName": "Sanders",
+      "phone": 22085815,
+      "email": "shadow43@gmail.com",
+      "NIT": "0000-0000-0000-0"
+    },
+    {
+      "id": 2,
+      "firstName": "Vincent",
+      "lastName": "Furnier",
+      "phone": 22584329,
+      "email": "furnier555@gmail.com",
+      "NIT": "0000-0000-0000-0"
+    },
+    {
+      "id": 3,
+      "firstName": "James",
+      "lastName": "Hetfield",
+      "phone": 22844267,
+      "email": "hetfield1@gmail.com",
+      "NIT": "0000-0000-0000-0"
+    },
+    {
+      "id": 4,
+      "firstName": "Dave",
+      "lastName": "Munstaine",
+      "phone": 22601468,
+      "email": "munstaine_dave@gmail.com",
+      "NIT": "0000-0000-0000-0"
+    },
+    {
+      "id": 5,
+      "firstName": "Taylor",
+      "lastName": "Momsen",
+      "phone": 23461135,
+      "email": "taylor5@gmail.com",
+      "NIT": "0000-0000-0000-0"
+    },
+    {
+      "firstName": "Chris",
+      "lastName": "Cerulli",
+      "phone": "22270654",
+      "NIT": "0000-0000-0000-0",
+      "email": "chris666@gmail.com",
+      "id": 6
+    },
+    {
+      "firstName": "Matthew",
+      "lastName": "Tuck",
+      "phone": "60781134",
+      "NIT": "0000-0000-0000-0",
+      "email": "matt_tuck0@gmail.com",
+      "id": 7
+    },
+    {
+      "firstName": "Brian",
+      "lastName": "Warner",
+      "phone": "26630361",
+      "NIT": "0000-0000-0000-0",
+      "email": "manson123@gmail.com",
+      "id": 8
+    },
+    {
+      "firstName": "Brian",
+      "lastName": "Johnson",
+      "phone": "56780122",
+      "NIT": "0000-0000-0000-0",
+      "email": "brian013@gmail.com",
+      "createdAt": "2021-08-27T23:28:55.385Z",
+      "updatedAt": "2021-08-27T23:28:55.385Z",
+      "id": 9
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "PC",
+      "logo": "https://image.flaticon.com/icons/png/512/977/977250.png",
+      "color": "green"
+    },
+    {
+      "id": 2,
+      "name": "Laptops",
+      "logo": "https://image.flaticon.com/icons/png/512/123/123400.png",
+      "color": "primary"
+    },
+    {
+      "id": 3,
+      "name": "Smart Tvs",
+      "logo": "https://image.flaticon.com/icons/png/512/4693/4693334.png",
+      "color": "purple"
+    },
+    {
+      "id": 4,
+      "name": "Smartphones",
+      "logo": "https://image.flaticon.com/icons/png/512/186/186239.png",
+      "color": "grey"
+    },
+    {
+      "id": 5,
+      "name": "Teclados",
+      "logo": "https://image.flaticon.com/icons/png/512/595/595550.png",
+      "color": "pink"
+    },
+    {
+      "id": 6,
+      "name": "Audifonos",
+      "logo": "https://image.flaticon.com/icons/png/512/3791/3791461.png",
+      "color": "danger"
+    },
+    {
+      "id": 7,
+      "name": "Sofas",
+      "logo": "https://image.flaticon.com/icons/png/512/2148/2148967.png",
+      "color": "brown"
+    },
+    {
+      "id": 8,
+      "name": "Tablets",
+      "logo": "https://image.flaticon.com/icons/png/512/2972/2972178.png",
+      "color": "info"
+    },
+    {
+      "id": 9,
+      "name": "Mouse",
+      "logo": "https://image.flaticon.com/icons/png/512/815/815703.png",
+      "color": "orange"
+    },
+    {
+      "id": 10,
+      "name": "Lamparas de noche",
+      "logo": "https://image.flaticon.com/icons/png/512/1863/1863183.png",
+      "color": "aqua"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Microsoft Surface",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "price": 865.65,
+      "picture": "https://www.techadvisor.com/cmsdata/reviews/3799750/ms_surface_laptop_go_review_12_thumb800.jpg",
+      "categoriesId": 2
+    },
+    {
+      "id": 2,
+      "name": "Smart Tv LG",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "price": 2250.9,
+      "picture": "https://www.adslzone.net/app/uploads-adslzone.net/2020/10/smarttv.jpg",
+      "categoriesId": 3
+    },
+    {
+      "id": 3,
+      "name": "Monitor Samsung Odyssey",
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "price": 1235.45,
+      "picture": "https://images.samsung.com/is/image/samsung/p5/mx/monitors/odyssey/images/odyssey_f09_mo_03.jpg?$ORIGIN_JPG$",
+      "categoriesId": 1
+    },
+    {
+      "name": "Samsung Galaxy Z",
+      "picture": "https://nl.letsgodigital.org/uploads/2021/01/samsung-opvouwbare-smartphone-galaxy-z-fold-3-5g.jpg",
+      "categoriesId": "4",
+      "price": 455.8,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "id": 4
+    },
+    {
+      "name": "Audifonos con cable",
+      "picture": "https://cr.epaenlinea.com/pub/media/version20200605/catalog/product/cache/a83b746ef25730b9cb1cc414bac0f04a/1/6/1676052_1.jpg",
+      "categoriesId": "6",
+      "price": 25,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "id": 5
+    },
+    {
+      "name": "Microsoft Teclado",
+      "picture": "https://cdn.elchangarro.com.sv/image/products/ic/25192641-3808.jpg?quality=40&width=1000&height=1000",
+      "categoriesId": "5",
+      "price": 80.85,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "id": 6
+    },
+    {
+      "name": "Lampara de mesa",
+      "picture": "https://img.vixdata.io/pd/jpg-large/es/sites/default/files/imj/hogartotal/C/Como-elegir-lamparas-de-mesa.jpg",
+      "categoriesId": "10",
+      "price": 60.55,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "id": 7
+    },
+    {
+      "name": "Sofa minimalista",
+      "picture": "https://www.listaminimalista.com/wp-content/uploads/2019/08/Novohogar-Elegante-sof%C3%A1-Cama-3-plazas-Malm%C3%B6-Confortable-y-F%C3%A1cil-de-Abrir-Gracias-a-su-Sistema-%E2%80%9CClic-clac-o-%E2%80%9Cde-Libro-cerrado-1024x683.jpg",
+      "categoriesId": "7",
+      "price": 455.55,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "id": 8
+    },
+    {
+      "name": "Tablet LG Enterprise",
+      "picture": "https://m.media-amazon.com/images/I/71JxproF3bL._AC_SY450_.jpg",
+      "categoriesId": "8",
+      "price": 355.55,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "id": 9
+    },
+    {
+      "name": "Apple",
+      "picture": "https://peru21.pe/resizer/I6a3j6IXORBAHUjhPz1zGvBB6OQ=/980x0/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/FAH7AXOGKRFZZOSTWK3G47AG7I.jpg",
+      "categoriesId": "2",
+      "price": 1500.99,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "createdAt": "2021-08-27T21:07:17.759Z",
+      "updatedAt": "2021-08-27T21:07:17.759Z",
+      "id": 10
+    },
+    {
+      "name": "MackBook Air",
+      "picture": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/macbook-air-og-202011?wid=1200&hei=630&fmt=jpeg&qlt=95&.v=1604278672000",
+      "categoriesId": 2,
+      "price": 2355.55,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "createdAt": "2021-08-28T16:38:48.244Z",
+      "updatedAt": "2021-08-28T16:38:48.244Z",
+      "id": 11
+    },
+    {
+      "name": "ChiQ Tv",
+      "picture": "https://rumah.com.au/wp-content/uploads/2020/07/chiq-tv-review-1.jpg",
+      "categoriesId": 3,
+      "price": 4350.99,
+      "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
+      "createdAt": "2021-08-29T05:10:02.172Z",
+      "updatedAt": "2021-08-29T05:10:02.172Z",
+      "id": 12
+    }
+  ],
+  "orders": [
+    {
+      "productsId": 2,
+      "clientsId": 1,
+      "quantity": 1,
+      "createdAt": "2021-08-27T18:24:48.097Z",
+      "updatedAt": "2021-08-27T18:24:48.097Z",
+      "id": 1
+    },
+    {
+      "productsId": 9,
+      "clientsId": 5,
+      "quantity": 2,
+      "createdAt": "2021-08-27T18:59:18.882Z",
+      "updatedAt": "2021-08-27T18:59:18.882Z",
+      "id": 2
+    },
+    {
+      "productsId": 3,
+      "clientsId": 1,
+      "quantity": 1,
+      "createdAt": "2021-08-27T21:33:46.569Z",
+      "updatedAt": "2021-08-27T21:33:46.569Z",
+      "id": 3
+    },
+    {
+      "productsId": 7,
+      "clientsId": 2,
+      "quantity": 5,
+      "createdAt": "2021-08-27T23:24:48.753Z",
+      "updatedAt": "2021-08-27T23:24:48.753Z",
+      "id": 4
+    },
+    {
+      "productsId": 8,
+      "clientsId": 9,
+      "quantity": 1,
+      "createdAt": "2021-08-27T23:29:46.907Z",
+      "updatedAt": "2021-08-27T23:29:46.907Z",
+      "id": 5
+    },
+    {
+      "productsId": 7,
+      "clientsId": 1,
+      "quantity": 3,
+      "createdAt": "2021-08-27T23:40:11.009Z",
+      "updatedAt": "2021-08-27T23:40:11.009Z",
+      "id": 6
+    },
+    {
+      "productsId": 4,
+      "clientsId": 8,
+      "quantity": 1,
+      "createdAt": "2021-08-28T01:33:44.392Z",
+      "updatedAt": "2021-08-28T01:33:44.392Z",
+      "id": 7
+    },
+    {
+      "productsId": 2,
+      "clientsId": 5,
+      "quantity": 1,
+      "createdAt": "2021-08-28T02:24:42.371Z",
+      "updatedAt": "2021-08-28T02:24:42.371Z",
+      "id": 8
+    },
+    {
+      "productsId": 6,
+      "clientsId": 5,
+      "quantity": 1,
+      "createdAt": "2021-08-28T04:45:11.430Z",
+      "updatedAt": "2021-08-28T04:45:11.430Z",
+      "id": 9
+    },
+    {
+      "productsId": 12,
+      "clientsId": 6,
+      "quantity": 2,
+      "createdAt": "2021-08-29T05:11:52.607Z",
+      "updatedAt": "2021-08-29T05:11:52.607Z",
+      "id": 10
+    }
+  ]
+}
