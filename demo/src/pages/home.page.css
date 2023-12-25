@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-main {
+.container {
   display: grid;
   align-items: center;
   height: 100vh;
@@ -16,24 +16,15 @@ main {
   padding: 0px 50px;
 }
 
-section {
+.picture {
   text-align: center;
 }
 
-section div {
-  text-align: start;
-}
-
-section h1,
-section p {
-  text-align: start;
-}
-
-section h1 {
+.title {
   font-size: 4rem;
 }
 
-section p {
+.description {
   font-size: 1.5rem;
   color: #777;
 }
@@ -44,7 +35,7 @@ section p {
   margin-top: 2rem;
 }
 
-section a {
+.btn {
   display: inline-flex;
   padding: 10px 20px;
   align-items: center;

@@ -18,7 +18,7 @@ export class DashboardLayout extends LitElement {
       <nav class="navbar">
         <div class="navbar__wrapper">
           <div class="navbar__logo">
-            <a href="https://lit.dev/" target="_blank" rel="noopener">
+            <a href="/">
               <img
                 src="https://lit.dev/images/logo.svg"
                 alt="Logo"

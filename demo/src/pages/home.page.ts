@@ -15,18 +15,18 @@ export class HomePage extends LitElement {
 
   protected render (): unknown {
     return html`
-      <main>
+      <main class="container">
         <section class="info">
-          <h1>The Official Lit Router</h1>
-          <p>
+          <h1 class="title">The Official Lit Router</h1>
+          <p class="description">
             A simple, lightweight router for LitElement. It supports nested
             routes, dynamic segments, and lazy loading.
           </p>
 
           <div class="actions">
-            <a class="btn__primary" href="/dashboard">Dashboard</a>
+            <a class="btn btn__primary" href="/dashboard">Dashboard</a>
             <a
-              class="btn__secondary"
+              class="btn btn__secondary"
               href="https://github.com/thebug404/lit-router"
               target="_blank"
               rel="noopener noreferrer"
