@@ -57,8 +57,11 @@ npm run build
 # Run tests
 npm run test
 
+# Enable json-server
+npx json-server --watch db.json
+
 # Run dev server
-npm run dev && npx json-server --watch db.json
+npm run dev
 ```
 
 ## Installation
