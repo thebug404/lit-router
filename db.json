@@ -143,7 +143,7 @@
       "name": "Microsoft Surface",
       "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       "price": 865.65,
-      "picture": "https://www.techadvisor.com/cmsdata/reviews/3799750/ms_surface_laptop_go_review_12_thumb800.jpg",
+      "picture": "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RW16lMH?ver=de7c&q=90&m=6&h=705&w=1253&b=%23FFFFFFFF&f=jpg&o=f&p=140&aim=true",
       "categoriesId": 2
     },
     {
@@ -156,7 +156,7 @@
     },
     {
       "id": 3,
-      "name": "Monitor Samsung Odyssey",
+      "name": "Samsung Odyssey",
       "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
       "price": 1235.45,
       "picture": "https://images.samsung.com/is/image/samsung/p5/mx/monitors/odyssey/images/odyssey_f09_mo_03.jpg?$ORIGIN_JPG$",
@@ -172,7 +172,7 @@
     },
     {
       "name": "Audifonos con cable",
-      "picture": "https://cr.epaenlinea.com/pub/media/version20200605/catalog/product/cache/a83b746ef25730b9cb1cc414bac0f04a/1/6/1676052_1.jpg",
+      "picture": "https://www.prado.com.sv/media/catalog/product/a/u/audifonos-diadema-gaming-logitech-g335-negro-183634_2_.jpg?optimize=medium&bg-color=255,255,255&fit=bounds&height=700&width=700&canvas=700:700",
       "categoriesId": "6",
       "price": 25,
       "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
@@ -188,7 +188,7 @@
     },
     {
       "name": "Lampara de mesa",
-      "picture": "https://img.vixdata.io/pd/jpg-large/es/sites/default/files/imj/hogartotal/C/Como-elegir-lamparas-de-mesa.jpg",
+      "picture": "https://kosiluz.es/21727-thickbox_default/lampara-de-mesa-de-marmol-y-cristal-blanco-estrela.jpg",
       "categoriesId": "10",
       "price": 60.55,
       "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
@@ -196,7 +196,7 @@
     },
     {
       "name": "Sofa minimalista",
-      "picture": "https://www.listaminimalista.com/wp-content/uploads/2019/08/Novohogar-Elegante-sof%C3%A1-Cama-3-plazas-Malm%C3%B6-Confortable-y-F%C3%A1cil-de-Abrir-Gracias-a-su-Sistema-%E2%80%9CClic-clac-o-%E2%80%9Cde-Libro-cerrado-1024x683.jpg",
+      "picture": "https://m.media-amazon.com/images/W/MEDIAX_792452-T2/images/I/51PtVZ9mrHL.jpg",
       "categoriesId": "7",
       "price": 455.55,
       "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard",
