@@ -1,5 +1,5 @@
-import { RouteConfig } from '../../dist/index.js'
-import '../../dist/index.js'
+import { RouteConfig } from '../../src/index.js'
+import '../../src/index.js'
 
 import { DashboardLayout } from './pages/dahboard.layout.js';
 import { DashboardPage } from './pages/dashboard.page.js'
